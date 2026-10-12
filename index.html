@@ -1,0 +1,803 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>Morning Chaos</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Chaos">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#fff4e6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1c1712" media="(prefers-color-scheme: dark)">
+<style>
+  :root {
+    --bg: #fff4e6;
+    --card: #ffffff;
+    --text: #2b211a;
+    --muted: #8a7766;
+    --line: #f0dfc8;
+    --accent: #ef6f3c;
+    --accent-ink: #ffffff;
+    --good: #3f9d5b;
+    --warn: #e2a51b;
+    --bad: #d6453d;
+    --tile: #fffaf3;
+    --here: #ffe2c7;
+    --shadow: 0 1px 2px rgba(80, 40, 10, .08), 0 6px 18px rgba(80, 40, 10, .07);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1c1712;
+      --card: #2a231c;
+      --text: #f6ece1;
+      --muted: #b29e8a;
+      --line: #3d3329;
+      --accent: #ff8a5a;
+      --accent-ink: #1c1712;
+      --good: #6cc488;
+      --warn: #f0c24b;
+      --bad: #ff6b61;
+      --tile: #241e18;
+      --here: #4a3423;
+      --shadow: none;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user-select: none;
+    overscroll-behavior: none;
+  }
+  button { font: inherit; color: inherit; cursor: pointer; touch-action: manipulation; }
+  #app {
+    max-width: 520px; margin: 0 auto; min-height: 100%; display: flex; flex-direction: column;
+    padding: env(safe-area-inset-top) max(16px, env(safe-area-inset-right)) env(safe-area-inset-bottom) max(16px, env(safe-area-inset-left));
+  }
+  .btn { border: 1px solid var(--line); background: var(--card); border-radius: 14px; padding: 13px 18px; font-weight: 650; box-shadow: var(--shadow); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .btn:disabled { opacity: .45; cursor: default; }
+  .btn:active:not(:disabled) { transform: scale(.97); }
+  .stack { display: flex; flex-direction: column; gap: 10px; }
+  .row { display: flex; gap: 10px; }
+  .row > * { flex: 1; }
+  .muted { color: var(--muted); }
+  .center { text-align: center; }
+  h1, h2, h3 { margin: 0; }
+
+  /* title */
+  .title { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 12px; text-align: center; padding: 32px 0; }
+  .title .big { font-size: 64px; line-height: 1; }
+  .title h1 { font-size: 40px; letter-spacing: -1px; font-weight: 800; }
+  .langs { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 14px; }
+  .langs button { border: 1px solid var(--line); background: transparent; border-radius: 999px; padding: 4px 12px; font-size: 14px; color: var(--muted); }
+  .langs button.on { background: var(--text); color: var(--bg); border-color: var(--text); }
+
+  /* calendar */
+  .head { display: flex; align-items: center; gap: 8px; padding: 14px 0 10px; }
+  .head .grow { flex: 1; font-weight: 700; font-size: 20px; }
+  .pill { border: 1px solid var(--line); background: var(--card); border-radius: 999px; padding: 6px 12px; font-size: 14px; white-space: nowrap; }
+  .week { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 14px; margin-bottom: 12px; box-shadow: var(--shadow); }
+  .week h3 { font-size: 16px; }
+  .week p { margin: 2px 0 10px; font-size: 13px; color: var(--muted); }
+  .days { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+  .day { border: 1px solid var(--line); background: var(--tile); border-radius: 12px; padding: 8px 2px; font-size: 12px; display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 0; }
+  .day b { font-size: 13px; }
+  .day .st { font-size: 11px; letter-spacing: -1px; }
+  .day:disabled { opacity: .4; cursor: default; }
+  .day.next { border-color: var(--accent); border-width: 2px; }
+
+  /* intro / results */
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 22px 18px; box-shadow: var(--shadow); }
+  .screen { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 16px; padding: 24px 0; }
+  .twist { background: var(--here); border-radius: 12px; padding: 10px 12px; font-size: 15px; }
+  .stars { font-size: 40px; text-align: center; letter-spacing: 4px; }
+  .disaster { border-left: 4px solid var(--bad); padding: 6px 12px; font-style: italic; }
+
+  /* game */
+  .hud { display: flex; align-items: center; gap: 10px; padding: 10px 0 8px; }
+  .clock { font-size: 28px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -1px; }
+  .clock.hot { color: var(--bad); }
+  .meter { flex: 1; min-width: 0; }
+  .meter small { font-size: 11px; color: var(--muted); display: block; }
+  .bar { height: 8px; border-radius: 99px; background: var(--line); overflow: hidden; }
+  .bar i { display: block; height: 100%; width: 100%; background: var(--good); border-radius: 99px; transition: background .3s; }
+  .house { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .room { position: relative; background: var(--tile); border: 1px solid var(--line); border-radius: 16px; padding: 8px; min-height: 104px; display: flex; flex-direction: column; gap: 6px; overflow: hidden; }
+  .room.here { background: var(--here); border-color: var(--accent); }
+  .room .rn { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; display: flex; justify-content: space-between; gap: 4px; }
+  .room .me { font-size: 18px; line-height: 1; }
+  .reqs { display: flex; flex-wrap: wrap; gap: 5px; }
+  .req { border: 0; border-radius: 12px; background: var(--card); box-shadow: var(--shadow); padding: 4px 6px 5px; display: flex; flex-direction: column; align-items: center; gap: 3px; width: 54px; outline: 1px solid var(--line); }
+  .req .em { font-size: 20px; line-height: 1.1; white-space: nowrap; }
+  .req .em small { font-size: 13px; }
+  .req .bar { width: 100%; height: 5px; }
+  .req.urgent { animation: wobble .4s infinite; }
+  .req.coffee { outline-style: dashed; }
+  @keyframes wobble { 0%,100% { transform: rotate(0); } 25% { transform: rotate(-4deg); } 75% { transform: rotate(4deg); } }
+  .tiltdown { animation: tilt 3s ease-in-out infinite; }
+  @keyframes tilt { 0%,100% { transform: rotate(0); } 50% { transform: rotate(1.2deg); } }
+  .speech { min-height: 22px; font-size: 14px; color: var(--muted); padding: 8px 2px 0; text-align: center; }
+
+  /* mini-game sheet */
+  .mini {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 5; background: var(--bg);
+    border-top: 1px solid var(--line); border-radius: 22px 22px 0 0; box-shadow: 0 -8px 30px rgba(0,0,0,.18);
+    padding: 14px max(16px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+    max-width: 520px; margin: 0 auto; min-height: 46vh;
+  }
+  .mini .mh { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
+  .mini .face { font-size: 30px; line-height: 1; }
+  .mini .ask { flex: 1; font-weight: 650; }
+  .mini .ask small { display: block; font-weight: 400; color: var(--muted); font-size: 13px; margin-top: 2px; }
+  .mini .x { border: 0; background: var(--line); border-radius: 50%; width: 32px; height: 32px; flex: none; }
+  .mini .pb { margin-bottom: 12px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .tile { border: 1px solid var(--line); background: var(--card); border-radius: 14px; font-size: 30px; aspect-ratio: 1.25; display: grid; place-items: center; box-shadow: var(--shadow); }
+  .tile:disabled { opacity: .35; cursor: default; }
+  .tile.hit { background: var(--here); opacity: 1; }
+  .tile.lit { background: var(--accent); }
+  .tile.shake { animation: shake .3s; }
+  @keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+  .opt2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .opt2 .tile { font-size: 52px; aspect-ratio: 1; }
+  .masher { width: 100%; font-size: 64px; padding: 18px; border-radius: 22px; border: 2px solid var(--accent); background: var(--card); }
+  .masher:active { transform: scale(.94); }
+  .track { position: relative; height: 54px; border-radius: 14px; background: var(--line); overflow: hidden; margin: 10px 0 14px; }
+  .zone { position: absolute; top: 0; bottom: 0; background: var(--good); opacity: .55; }
+  .needle { position: absolute; top: -4px; bottom: -4px; width: 6px; margin-left: -3px; background: var(--text); border-radius: 3px; }
+  .flash { text-align: center; font-weight: 700; min-height: 24px; margin-top: 10px; }
+  .flash.bad { color: var(--bad); } .flash.good { color: var(--good); }
+  .replies { display: flex; flex-direction: column; gap: 8px; }
+
+  .sheet-bg { position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 10; display: flex; align-items: flex-end; justify-content: center; }
+  .sheet { background: var(--bg); width: 100%; max-width: 520px; max-height: 88vh; overflow: auto; border-radius: 22px 22px 0 0; padding: 20px max(16px, env(safe-area-inset-right)) max(20px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
+  .sheet h3 { font-size: 22px; margin-bottom: 12px; }
+  .up { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .up .i { font-size: 28px; }
+  .up .t { flex: 1; min-width: 0; }
+  .up .t b { display: block; }
+  .up .t span { font-size: 13px; color: var(--muted); }
+  .up .btn { padding: 8px 12px; font-size: 14px; white-space: nowrap; }
+  .toast { position: fixed; left: 50%; top: calc(env(safe-area-inset-top) + 64px); transform: translateX(-50%); z-index: 20; background: var(--text); color: var(--bg); padding: 9px 14px; border-radius: 999px; font-size: 14px; font-weight: 650; max-width: calc(100% - 32px); text-align: center; animation: toast 2.8s forwards; }
+  @keyframes toast { 0% { opacity: 0; transform: translate(-50%, -8px); } 8%, 85% { opacity: 1; transform: translate(-50%, 0); } 100% { opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) { .req.urgent, .tiltdown { animation: none; } }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script src="strings.js"></script>
+<script>
+// ===================== data =====================
+const ROOMS = [
+  { id: 'girls', icon: '🛏️', c: 0, r: 0 }, { id: 'bath', icon: '🛁', c: 1, r: 0 },
+  { id: 'living', icon: '🛋️', c: 0, r: 1 }, { id: 'kitchen', icon: '🍳', c: 1, r: 1 },
+  { id: 'hall', icon: '🚪', c: 0, r: 2 }, { id: 'garden', icon: '🌳', c: 1, r: 2 }
+];
+const FACE = { margot: '📚', anouk: '🎨', mauro: '🧢', julie: '☕' };
+const LIVING = ['🛋️', '📰', '🧺', '🎮', '🪴', '📦', '🧸', '🎒', '🕹️'];
+const HALL = ['🧥', '👢', '📦', '🛍️', '🧺', '🎒', '🧣', '👞', '🪴'];
+const REQ = {
+  shoes:      { who: 'margot', room: 'girls',   kind: 'find', icon: '👟', covers: ['📚'] },
+  library:    { who: 'margot', room: 'living',  kind: 'find', icon: '📖', covers: LIVING },
+  slip:       { who: 'margot', room: 'hall',    kind: 'mash', icon: '✍️', mash: 'mashSign', taps: 6 },
+  lunch:      { who: 'margot', room: 'kitchen', kind: 'pack', icon: '🥪', good: ['🥪', '🍎', '🥕', '🧃'], bad: ['🧦', '📱', '🪲', '🧸'] },
+  toothpaste: { who: 'margot', room: 'bath',    kind: 'mash', icon: '🪥', mash: 'mashScrub', taps: 12 },
+  handballBag:{ who: 'margot', room: 'hall',    kind: 'pack', icon: '🎒', good: ['👟', '🩳', '👕', '🥤'], bad: ['📚', '🍌', '🧸', '🍕'] },
+  homework:   { who: 'margot', room: 'girls',   kind: 'reply', icon: '📝' },
+  alarm:      { who: 'margot', room: 'girls',   kind: 'seq', icon: '⏰', set: ['⏰', '💡', '🪟', '🥞'] },
+  rainBoots:  { who: 'margot', room: 'hall',    kind: 'find', icon: '🥾', covers: HALL, weeks: [1] },
+  giftWrap:   { who: 'margot', room: 'living',  kind: 'pack', icon: '🎁', good: ['🎁', '🎀', '✂️', '📜'], bad: ['🧦', '🥫', '🐟', '🔑'], weeks: [2], special: 'party' },
+  outfit:     { who: 'anouk',  room: 'girls',   kind: 'opinion', icon: '👗', pairs: [['👗', '👖'], ['👚', '👕'], ['👟', '👢'], ['🧣', '🎀'], ['👒', '🧢']] },
+  yarn:       { who: 'anouk',  room: 'living',  kind: 'find', icon: '🧶', covers: LIVING },
+  paint:      { who: 'anouk',  room: 'bath',    kind: 'mash', icon: '🎨', mash: 'mashScrub', taps: 14 },
+  basketball: { who: 'anouk',  room: 'garden',  kind: 'find', icon: '🏀', covers: ['🌳', '🪴', '🛝', '🪣', '🌼', '🪨', '🚲', '🛖', '🌿'] },
+  braid:      { who: 'anouk',  room: 'bath',    kind: 'seq', icon: '💇‍♀️', set: ['⬅️', '⬆️', '➡️'] },
+  egg:        { who: 'anouk',  room: 'kitchen', kind: 'timing', icon: '🥚', timing: 'timingEgg' },
+  artProject: { who: 'anouk',  room: 'girls',   kind: 'pack', icon: '🖼️', good: ['🖌️', '🎨', '✂️', '🖍️'], bad: ['🍝', '🧦', '🐌', '🔑'] },
+  ironic:     { who: 'anouk',  room: 'girls',   kind: 'reply', icon: '🧥' },
+  sleepover:  { who: 'anouk',  room: 'living',  kind: 'reply', icon: '🛌' },
+  mud:        { who: 'anouk',  room: 'hall',    kind: 'mash', icon: '🟫', mash: 'mashScrub', taps: 14, weeks: [1] },
+  balloons:   { who: 'anouk',  room: 'living',  kind: 'mash', icon: '🎈', mash: 'mashBlow', taps: 14, weeks: [2], special: 'party' },
+  sunscreen:  { who: 'anouk',  room: 'garden',  kind: 'mash', icon: '🧴', mash: 'mashRub', taps: 10, weeks: [3], special: 'departure' },
+  keys:       { who: 'mauro',  room: 'hall',    kind: 'find', icon: '🔑', covers: ['🧊', '🍞', '🪴', '🧺', '🛋️', '🧥', '🥫', '👞', '✋'], hook: true },
+  badge:      { who: 'mauro',  room: 'kitchen', kind: 'find', icon: '🪪', covers: ['🥣', '📰', '🍞', '🧃', '🥫', '🧺', '🍌', '📦', '🫖'], hook: true },
+  shirt:      { who: 'mauro',  room: 'bath',    kind: 'opinion', icon: '👔', pairs: [['👔', '👕'], ['🧦', '🧦'], ['👞', '👟'], ['🕶️', '👓']] },
+  umbrella:   { who: 'mauro',  room: 'hall',    kind: 'find', icon: '☂️', covers: HALL },
+  toast:      { who: 'mauro',  room: 'kitchen', kind: 'timing', icon: '🍞', timing: 'timingToast' },
+  socks:      { who: 'mauro',  room: 'living',  kind: 'pairs', icon: '🧦' },
+  videoCall:  { who: 'mauro',  room: 'living',  kind: 'reply', icon: '💻' },
+  satFact:    { who: 'mauro',  room: 'kitchen', kind: 'reply', icon: '🛰️' },
+  bins:       { who: 'mauro',  room: 'garden',  kind: 'mash', icon: '🗑️', mash: 'mashBins', taps: 12 },
+  picnic:     { who: 'mauro',  room: 'kitchen', kind: 'pack', icon: '🧺', good: ['🧀', '🍓', '🥖', '🍰'], bad: ['🧦', '🍋', '🔑', '📚'], special: 'picnic', only: true },
+  cake:       { who: 'mauro',  room: 'kitchen', kind: 'pack', icon: '🎂', good: ['🥚', '🧈', '🍫', '🍓'], bad: ['🧦', '🔑', '🐟', '🧽'], special: 'party', only: true },
+  suitcase:   { who: 'mauro',  room: 'hall',    kind: 'pack', icon: '🧳', good: ['👙', '🩴', '🕶️', '🧴'], bad: ['🧹', '🪴', '📺', '🍳'], weeks: [3], special: 'departure' },
+  passport:   { who: 'mauro',  room: 'living',  kind: 'find', icon: '🛂', covers: LIVING, special: 'departure', only: true }
+};
+// One twist per morning; Fridays are themed finales.
+const EVENTS = [null, null, 'calm', 'lateBus', 'picnic',
+                'powerCut', 'wfh', null, 'slowWifi', 'picnic',
+                'fight', 'wfh', 'powerCut', 'calm', 'party',
+                'slowWifi', 'powerCut', 'fight', 'wfh', 'departure'];
+const UPGRADES = [
+  { id: 'keyHook', icon: '🪝', cost: 30 }, { id: 'sneakers', icon: '👟', cost: 50 },
+  { id: 'espresso', icon: '☕', cost: 60 }, { id: 'prep', icon: '📋', cost: 60 },
+  { id: 'calendar', icon: '🗓️', cost: 70 }, { id: 'labels', icon: '🏷️', cost: 80 },
+  { id: 'headphones', icon: '🎧', cost: 100 }, { id: 'grandma', icon: '👵', cost: 120 }
+];
+const DAYS = 20;
+
+// ===================== persistence & i18n =====================
+const SAVE = 'morning-chaos-v1', LANG = 'morning-chaos-lang';
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
+};
+const fresh = () => ({ stars: Array(DAYS).fill(0), coins: 0, up: [], finalSeen: false });
+let P = Object.assign(fresh(), store.get(SAVE, {}));
+const saveP = () => store.set(SAVE, P);
+let lang = store.get(LANG, null) || (navigator.language || 'en').slice(0, 2);
+if (!STRINGS[lang]) lang = 'en';
+let L = STRINGS[lang], U = L.ui;
+const has = id => P.up.includes(id);
+const fmt = (s, o) => s.replace(/\{(\w+)\}/g, (_, k) => o[k] ?? '');
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const pickOne = a => a[Math.random() * a.length | 0];
+const app = document.getElementById('app');
+const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
+const btn = (cls, html, fn) => { const b = el('button', cls, html); b.onclick = fn; return b; };
+const weekOf = d => d / 5 | 0;
+const dayLabel = d => `${L.days[d % 5]} · ${L.weeks[weekOf(d)].name}`;
+const unlocked = d => d === 0 || P.stars[d - 1] > 0;
+const totalStars = () => P.stars.reduce((a, b) => a + b, 0);
+function toast(msg) {
+  document.querySelector('.toast')?.remove();
+  const t = el('div', 'toast', esc(msg));
+  document.body.append(t);
+  setTimeout(() => t.remove(), 2900);
+}
+function sheet(build) {
+  const bg = el('div', 'sheet-bg'), s = el('div', 'sheet');
+  bg.append(s); build(s, () => bg.remove());
+  bg.onclick = e => { if (e.target === bg) bg.remove(); };
+  document.body.append(bg);
+}
+
+// ===================== menu screens =====================
+function showTitle() {
+  stopGame();
+  app.innerHTML = '';
+  const t = el('div', 'title');
+  t.append(el('div', 'big', '☕🏠💨'), el('h1', '', esc(U.title)), el('p', 'muted', esc(U.tagline)));
+  const s = el('div', 'stack');
+  s.append(btn('btn primary', esc(U.play), showCalendar), btn('btn', '❓ ' + esc(U.howToTitle), showHowTo));
+  t.append(s);
+  const langs = el('div', 'langs');
+  for (const id of Object.keys(STRINGS)) {
+    langs.append(btn(id === lang ? 'on' : '', esc(STRINGS[id].langName), () => {
+      lang = id; L = STRINGS[id]; U = L.ui; store.set(LANG, id); document.documentElement.lang = id; document.title = U.title; showTitle();
+    }));
+  }
+  t.append(langs);
+  app.append(t);
+}
+function showHowTo() {
+  sheet((s, close) => {
+    s.append(el('h3', '', esc(U.howToTitle)));
+    const ol = el('ol');
+    U.howTo.forEach(x => ol.append(el('li', '', esc(x))));
+    ol.style.paddingLeft = '20px'; ol.style.lineHeight = '1.5';
+    s.append(ol, btn('btn primary', 'OK', close));
+    s.lastChild.style.width = '100%';
+  });
+}
+function showCalendar() {
+  stopGame();
+  app.innerHTML = '';
+  const h = el('div', 'head');
+  h.append(btn('pill', '←', showTitle), el('div', 'grow', esc(U.menu)), btn('pill', `🛍️ ${esc(U.shop)} · 🪙 ${P.coins}`, showShop));
+  app.append(h);
+  const next = P.stars.findIndex((s, i) => s === 0 && unlocked(i));
+  for (let w = 0; w < 4; w++) {
+    const card = el('div', 'week');
+    card.append(el('h3', '', esc(L.weeks[w].name)), el('p', '', esc(L.weeks[w].intro)));
+    const row = el('div', 'days');
+    for (let i = 0; i < 5; i++) {
+      const d = w * 5 + i;
+      const b = btn('day' + (d === next ? ' next' : ''), `<b>${esc(L.days[i].slice(0, 3))}</b><span class="st">${unlocked(d) ? '⭐'.repeat(P.stars[d]) + '☆'.repeat(3 - P.stars[d]) : '🔒'}</span>`, () => showIntro(d));
+      b.disabled = !unlocked(d);
+      if (!unlocked(d)) b.title = U.needStar;
+      row.append(b);
+    }
+    card.append(row);
+    app.append(card);
+  }
+  if (P.stars[DAYS - 1] > 0) app.append(btn('btn', '🏖️ ' + esc(U.finalTitle), showFinal));
+  app.append(el('div', 'center muted', `<small>⭐ ${totalStars()}/60</small>`));
+}
+function showShop() {
+  sheet((s, close) => {
+    const head = el('h3', '', `🛍️ ${esc(U.shop)} · 🪙 ${P.coins}`);
+    s.append(head);
+    for (const u of UPGRADES) {
+      const t = L.upgrades[u.id];
+      const row = el('div', 'up');
+      row.append(el('div', 'i', u.icon), el('div', 't', `<b>${esc(t.name)}</b><span>${esc(t.desc)}</span>`));
+      const b = btn('btn' + (has(u.id) ? '' : ' primary'), has(u.id) ? '✓ ' + esc(U.owned) : `🪙 ${u.cost}`, () => {
+        if (has(u.id) || P.coins < u.cost) return;
+        P.coins -= u.cost; P.up.push(u.id); saveP();
+        close(); showShop(); if (!game) showCalendar();
+      });
+      b.disabled = has(u.id) || P.coins < u.cost;
+      row.append(b);
+      s.append(row);
+    }
+    s.append(btn('btn', 'OK', close));
+    s.lastChild.style.cssText = 'width:100%;margin-top:14px';
+  });
+}
+function showIntro(d) {
+  app.innerHTML = '';
+  const sc = el('div', 'screen');
+  const c = el('div', 'card stack');
+  c.append(el('div', 'muted', esc(L.weeks[weekOf(d)].name)), el('h2', '', esc(L.days[d % 5])));
+  if (EVENTS[d]) c.append(el('div', 'twist', `<b>${esc(U.twist)}:</b> ${esc(L.events[EVENTS[d]])}`));
+  else if (d === 0) c.append(el('p', '', esc(U.howTo[0]) + ' ' + esc(U.howTo[1])));
+  c.append(btn('btn primary', esc(U.start), () => startGame(d)));
+  c.append(btn('btn', esc(U.menu), showCalendar));
+  sc.append(c);
+  app.append(sc);
+}
+
+// ===================== game =====================
+let game = null, raf = 0;
+function stopGame() { cancelAnimationFrame(raf); game = null; document.querySelector('.mini')?.remove(); }
+
+function plan(d) {
+  const ev = EVENTS[d], w = weekOf(d);
+  const pool = Object.keys(REQ).filter(id => {
+    const r = REQ[id];
+    if (r.only) return false;
+    return !r.weeks || r.weeks.includes(w);
+  });
+  const count = Math.round(6 + d * 0.55);
+  const forced = Object.keys(REQ).filter(id => REQ[id].special && REQ[id].special === ev).slice(0, 3);
+  const ids = [];
+  const used = {};
+  while (ids.length < count - forced.length) {
+    let cand = pickOne(pool);
+    if (ev === 'wfh' && Math.random() < .45) cand = pickOne(pool.filter(id => REQ[id].who === 'mauro'));
+    if ((used[cand] || 0) >= 1 && Math.random() < .85) continue;
+    used[cand] = (used[cand] || 0) + 1;
+    ids.push(cand);
+  }
+  // spread forced specials through the middle of the morning
+  forced.forEach((id, i) => ids.splice(Math.floor(ids.length * (0.3 + 0.2 * i)), 0, id));
+  return ids;
+}
+
+function startGame(d) {
+  stopGame();
+  const ev = EVENTS[d];
+  let dur = 100 + d * 1.5;
+  if (ev === 'lateBus') dur *= 0.85;
+  if (has('calendar')) dur += 10;
+  let pat = 16 - d * 0.3;
+  if (ev === 'calm') pat *= 1.25;
+  if (ev === 'slowWifi') pat *= 0.8;
+  if (has('headphones')) pat *= 1.15;
+  const ids = plan(d);
+  const span = dur * 0.8;
+  game = {
+    d, ev, dur, pat, t: 0, last: performance.now(),
+    queue: ids.map((id, i) => ({ id, at: 1.5 + i * span / ids.length + Math.random() * (span / ids.length) * 0.6 })),
+    total: ids.length, active: [], done: 0, fails: [],
+    room: 'kitchen', moving: null, sanity: 100, emptied: false, everEmpty: false,
+    decay: (0.7 + d * 0.04) * (has('espresso') ? 0.75 : 1),
+    powerUntil: ev === 'powerCut' ? dur * 0.6 : 0,
+    grandma: has('grandma') ? 1 : 0, mini: null, dirty: true, uid: 0
+  };
+  renderGame();
+  raf = requestAnimationFrame(loop);
+}
+
+function loop(now) {
+  const g = game;
+  if (!g) return;
+  const dt = Math.max(0, Math.min(0.1, (now - g.last) / 1000));
+  g.last = now;
+  g.t += dt;
+  // spawn
+  while (g.queue.length && g.queue[0].at <= g.t) {
+    const q = g.queue.shift();
+    const def = REQ[q.id];
+    let p = g.pat * (0.85 + Math.random() * 0.3);
+    if (g.ev === 'fight' && def.room === 'bath') p *= 0.6;
+    if (def.special) p *= 1.4;
+    g.active.push({ uid: ++g.uid, id: q.id, def, max: p, left: p });
+    g.dirty = true;
+  }
+  // patience
+  const mult = g.sanity <= 0 ? 2 : 1;
+  for (const r of g.active.slice()) {
+    if (g.mini && g.mini.req === r && g.mini.paused) continue;
+    r.left -= dt * mult;
+    if (r.left <= 0) failReq(r);
+  }
+  // sanity
+  g.sanity = Math.max(0, g.sanity - g.decay * dt);
+  if (g.sanity <= 0 && !g.emptied) { g.emptied = true; g.everEmpty = true; toast(U.lowCoffee); g.dirty = true; }
+  if (g.powerUntil && g.t >= g.powerUntil) { g.powerUntil = 0; g.dirty = true; }
+  // travel
+  if (g.moving && g.t >= g.moving.until) {
+    g.room = g.moving.to;
+    const then = g.moving.then;
+    g.moving = null; g.dirty = true;
+    if (then) then();
+  }
+  // end?
+  if (g.t >= g.dur || (!g.queue.length && !g.active.length)) return endGame();
+  if (g.dirty) { renderHouse(); g.dirty = false; }
+  updateBars();
+  raf = requestAnimationFrame(loop);
+}
+
+function failReq(r) {
+  const g = game;
+  g.active = g.active.filter(x => x !== r);
+  g.fails.push(r.id);
+  toast('💥 ' + L.req[r.id].fail);
+  if (g.mini && g.mini.req === r) closeMini();
+  g.dirty = true;
+}
+function resolveReq(r) {
+  const g = game;
+  if (!g || !g.active.includes(r)) return;
+  g.active = g.active.filter(x => x !== r);
+  g.done++;
+  g.dirty = true;
+}
+
+function travel(to, then) {
+  const g = game;
+  if (g.moving) return;
+  if (g.room === to) return then();
+  const a = ROOMS.find(x => x.id === g.room), b = ROOMS.find(x => x.id === to);
+  const dist = Math.abs(a.c - b.c) + Math.abs(a.r - b.r);
+  g.moving = { to, until: g.t + dist * 0.35 * (has('sneakers') ? 0.55 : 1), then };
+  g.dirty = true;
+}
+
+function renderGame() {
+  app.innerHTML = '';
+  const hud = el('div', 'hud');
+  hud.append(btn('pill', '✕', () => { if (confirm(U.quit + '?')) showCalendar(); }));
+  hud.append(el('div', 'clock', '7:30'));
+  const m = el('div', 'meter', `<small>☕ ${esc(U.coffee)}</small><div class="bar"><i></i></div>`);
+  hud.append(m);
+  if (game.grandma) hud.append(btn('pill grandma', '👵', useGrandma));
+  app.append(hud);
+  app.append(el('div', 'house'));
+  app.append(el('div', 'speech', esc(L.days[game.d % 5]) + (game.ev ? ' · ' + esc(L.events[game.ev]) : '')));
+  renderHouse();
+}
+
+function renderHouse() {
+  const g = game;
+  const house = app.querySelector('.house');
+  if (!house) return;
+  house.innerHTML = '';
+  house.classList.toggle('tiltdown', g.sanity <= 0);
+  for (const room of ROOMS) {
+    const here = !g.moving && g.room === room.id;
+    const tile = el('div', 'room' + (here ? ' here' : ''));
+    tile.append(el('div', 'rn', `<span>${room.icon} ${esc(L.rooms[room.id])}</span><span class="me">${here ? '🙋‍♀️' : (g.moving && g.moving.to === room.id ? '🏃‍♀️' : '')}</span>`));
+    const reqs = el('div', 'reqs');
+    for (const r of g.active.filter(x => x.def.room === room.id)) {
+      const b = btn('req', `<span class="em">${FACE[r.def.who]}<small>${r.def.icon}</small></span><span class="bar"><i></i></span>`, () => openReq(r));
+      b.dataset.uid = r.uid;
+      reqs.append(b);
+    }
+    if (room.id === 'kitchen') {
+      const off = g.t < g.powerUntil;
+      const b = btn('req coffee', `<span class="em">☕<small>${off ? '🔌' : ''}</small></span><span class="bar" style="visibility:hidden"><i></i></span>`, () => openCoffee());
+      b.disabled = off;
+      b.title = off ? U.coffeeOff : U.coffee;
+      reqs.append(b);
+    }
+    tile.append(reqs);
+    tile.onclick = e => { if (e.target === tile || e.target.closest('.rn')) travel(room.id, () => {}); };
+    house.append(tile);
+  }
+}
+
+function updateBars() {
+  const g = game;
+  const mins = g.t / g.dur * 5, mm = Math.floor(mins), ss = Math.floor((mins - mm) * 60);
+  const clock = app.querySelector('.clock');
+  if (clock) { clock.textContent = `7:${String(30 + mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}`; clock.classList.toggle('hot', mins > 4); }
+  const sb = app.querySelector('.meter .bar i');
+  if (sb) { sb.style.width = g.sanity + '%'; sb.style.background = g.sanity > 50 ? 'var(--good)' : g.sanity > 20 ? 'var(--warn)' : 'var(--bad)'; }
+  for (const r of g.active) {
+    const b = app.querySelector(`.req[data-uid="${r.uid}"]`);
+    if (!b) continue;
+    const f = r.left / r.max;
+    const i = b.querySelector('.bar i');
+    i.style.width = (f * 100) + '%';
+    i.style.background = f > .5 ? 'var(--good)' : f > .25 ? 'var(--warn)' : 'var(--bad)';
+    b.classList.toggle('urgent', f < .25);
+  }
+}
+
+function useGrandma() {
+  const g = game;
+  if (!g.grandma || !g.active.length) return;
+  const r = g.active.slice().sort((a, b) => a.left - b.left)[0];
+  g.grandma = 0;
+  if (g.mini && g.mini.req === r) closeMini();
+  resolveReq(r);
+  toast(U.grandmaUsed);
+  app.querySelector('.grandma')?.remove();
+}
+
+// ===================== mini-games =====================
+function closeMini() {
+  if (game) game.mini = null;
+  document.querySelector('.mini')?.remove();
+}
+function openReq(r) {
+  const g = game;
+  if (g.mini || g.moving) return;
+  travel(r.def.room, () => {
+    if (!game || !g.active.includes(r) || g.mini) return;
+    openMini(r);
+  });
+}
+function openCoffee() {
+  const g = game;
+  if (g.mini || g.moving || g.t < g.powerUntil) return;
+  travel('kitchen', () => {
+    if (!game || g.mini) return;
+    openMini(null);
+  });
+}
+
+function openMini(r) {
+  const g = game;
+  const box = el('div', 'mini');
+  g.mini = { req: r };
+  const who = r ? r.def.who : 'julie';
+  const ask = r ? L.req[r.id].ask : U.coffee;
+  const head = el('div', 'mh');
+  head.append(el('div', 'face', FACE[who]), el('div', 'ask', `${esc(ask)}<small></small>`), btn('x', '✕', closeMini));
+  box.append(head);
+  const sub = head.querySelector('small');
+  const body = el('div');
+  const flash = el('div', 'flash');
+  box.append(body, flash);
+  document.body.append(box);
+  const say = (txt, cls) => { flash.className = 'flash ' + (cls || ''); flash.textContent = txt; };
+  const win = msg => {
+    say(msg || U.done, 'good');
+    body.querySelectorAll('button').forEach(b => b.disabled = true);
+    setTimeout(() => {
+      if (!game || game.mini?.req !== r || !document.body.contains(box)) return;
+      if (r) resolveReq(r); else { game.sanity = 100; game.emptied = false; game.dirty = true; toast(U.coffeeDone); }
+      closeMini();
+    }, 450);
+  };
+  const kind = r ? r.def.kind : 'mash';
+  MINI[kind]({ r, def: r ? r.def : { mash: 'mashCoffee', taps: has('espresso') ? 6 : 12 }, body, sub, say, win, close: closeMini });
+}
+
+const MINI = {
+  find({ r, def, body, sub, say, win }) {
+    sub.textContent = U.find;
+    const n = def.hook && has('keyHook') ? 4 : has('labels') ? 6 : 9;
+    const covers = shuffle(def.covers.length > 1 ? def.covers : Array(9).fill(def.covers[0])).slice(0, n);
+    const hit = Math.random() * n | 0;
+    const grid = el('div', 'grid3');
+    covers.forEach((c, i) => grid.append(btn('tile', c, e => {
+      const b = e.currentTarget;
+      if (i === hit) { b.textContent = def.icon; b.classList.add('hit'); win(r.id === 'keys' ? U.keysFound : U.found); }
+      else { b.textContent = '💨'; b.disabled = true; }
+    })));
+    body.append(grid);
+  },
+  opinion({ r, def, body, sub, say, win }) {
+    sub.textContent = U.opinion;
+    const rounds = shuffle(def.pairs).slice(0, 3);
+    let i = 0;
+    const draw = () => {
+      body.innerHTML = '';
+      const row = el('div', 'opt2');
+      for (const o of rounds[i]) row.append(btn('tile', o, () => {
+        i++;
+        if (i >= rounds.length) return win(r.def.who === 'mauro' ? U.mauroDone : U.anoukDone);
+        say(U.opinionNo[(i - 1) % U.opinionNo.length]);
+        draw();
+      }));
+      body.append(row);
+    };
+    draw();
+  },
+  mash({ def, body, sub, say, win }) {
+    sub.textContent = U[def.mash];
+    const need = def.taps + Math.floor((game.d || 0) / 4);
+    let n = 0;
+    const pb = el('div', 'bar pb', '<i style="width:0%"></i>');
+    const icon = def.icon || '☕';
+    const b = btn('masher', icon, () => {
+      n++;
+      pb.firstChild.style.width = Math.min(100, n / need * 100) + '%';
+      b.style.transform = `rotate(${(n % 2 ? -1 : 1) * 6}deg)`;
+      if (n >= need) win();
+    });
+    body.append(pb, b);
+  },
+  pack({ r, def, body, sub, say, win }) {
+    sub.textContent = U.pack;
+    const good = def.good.slice(0, has('prep') ? 2 : 4);
+    let left = good.length;
+    const grid = el('div', 'grid4');
+    for (const item of shuffle([...good, ...def.bad])) {
+      grid.append(btn('tile', item, e => {
+        const b = e.currentTarget;
+        if (good.includes(item)) { b.disabled = true; b.classList.add('hit'); if (--left === 0) win(); }
+        else { b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake'); say(U.packWrong, 'bad'); r.left = Math.max(0.5, r.left - 1); }
+      }));
+    }
+    body.append(grid);
+  },
+  timing({ r, def, body, sub, say, win }) {
+    sub.textContent = U[def.timing];
+    const track = el('div', 'track');
+    const zone = el('div', 'zone'), needle = el('div', 'needle');
+    const w = Math.max(0.12, 0.22 - game.d * 0.004);
+    const z0 = 0.15 + Math.random() * (0.7 - w);
+    zone.style.left = z0 * 100 + '%'; zone.style.width = w * 100 + '%';
+    track.append(zone, needle);
+    const speed = 0.9 + game.d * 0.04;
+    const t0 = performance.now();
+    let pos = 0, live = true;
+    const tick = now => {
+      if (!live || !document.body.contains(track)) return;
+      const ph = ((now - t0) / 1000 * speed) % 2;
+      pos = ph < 1 ? ph : 2 - ph;
+      needle.style.left = pos * 100 + '%';
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+    const stop = btn('btn primary', '⏹ STOP', () => {
+      if (pos >= z0 && pos <= z0 + w) { live = false; win(); }
+      else { say(U.timingMiss, 'bad'); r.left = Math.max(0.5, r.left - 1.5); }
+    });
+    stop.style.width = '100%';
+    body.append(track, stop);
+  },
+  pairs({ body, sub, say, win }) {
+    sub.textContent = U.pairs;
+    const colors = ['#e4572e', '#3f9d5b', '#2f7fd8', '#e2b21b'];
+    const cards = shuffle([0, 0, 1, 1, 2, 2, 3, 3]);
+    let open = [], matched = 0, lock = false;
+    const grid = el('div', 'grid4');
+    cards.forEach((c, i) => {
+      const b = btn('tile', '❔', () => {
+        if (lock || open.includes(i) || b.disabled) return;
+        b.textContent = '🧦'; b.style.background = colors[c];
+        open.push(i);
+        if (open.length === 2) {
+          const [a, z] = open;
+          const ba = grid.children[a], bz = grid.children[z];
+          if (cards[a] === cards[z]) { ba.disabled = bz.disabled = true; ba.style.opacity = bz.style.opacity = 1; open = []; if (++matched === 4) win(); }
+          else { lock = true; setTimeout(() => { ba.textContent = bz.textContent = '❔'; ba.style.background = bz.style.background = ''; open = []; lock = false; }, 550); }
+        }
+      });
+      grid.append(b);
+    });
+    body.append(grid);
+  },
+  seq({ r, def, body, sub, say, win }) {
+    const len = 3 + Math.min(2, Math.floor(game.d / 7));
+    const seq = Array.from({ length: len }, () => Math.random() * def.set.length | 0);
+    const grid = el('div', def.set.length === 4 ? 'grid4' : 'grid3');
+    const tiles = def.set.map((s, i) => btn('tile', s, () => press(i)));
+    tiles.forEach(t => grid.append(t));
+    body.append(grid);
+    let input = [], playing = false;
+    const play = async () => {
+      playing = true; input = [];
+      sub.textContent = U.seqWatch;
+      tiles.forEach(t => t.disabled = true);
+      await new Promise(res => setTimeout(res, 400));
+      for (const s of seq) {
+        if (!document.body.contains(grid)) return;
+        tiles[s].classList.add('lit');
+        await new Promise(res => setTimeout(res, 420));
+        tiles[s].classList.remove('lit');
+        await new Promise(res => setTimeout(res, 160));
+      }
+      tiles.forEach(t => t.disabled = false);
+      sub.textContent = U.seqGo; playing = false;
+    };
+    const press = i => {
+      if (playing) return;
+      input.push(i);
+      const k = input.length - 1;
+      tiles[i].classList.add('lit'); setTimeout(() => tiles[i].classList.remove('lit'), 150);
+      if (seq[k] !== i) { say(U.seqMiss, 'bad'); r.left = Math.max(0.5, r.left - 1); return play(); }
+      if (input.length === seq.length) win();
+    };
+    play();
+  },
+  reply({ r, body, sub, say, close }) {
+    sub.textContent = U.reply;
+    const opts = L.req[r.id].opts;
+    const list = el('div', 'replies');
+    for (const i of shuffle([0, 1, 2])) list.append(btn('btn', esc(opts[i]), () => {
+      if (i === 0) { list.querySelectorAll('button').forEach(b => b.disabled = true); say(U.done, 'good'); setTimeout(() => { if (game && game.mini?.req === r) { resolveReq(r); close(); } }, 450); }
+      else { say(U.badReply, 'bad'); r.left = r.left * 0.6; list.querySelectorAll('button').forEach(b => b.disabled = true); setTimeout(() => { if (game && game.mini?.req === r) close(); }, 700); }
+    }));
+    body.append(list);
+  }
+};
+
+// ===================== results =====================
+function endGame() {
+  const g = game;
+  stopGame();
+  const ratio = g.done / g.total;
+  const stars = ratio >= 1 && !g.everEmpty ? 3 : ratio >= 0.8 ? 2 : ratio >= 0.5 ? 1 : 0;
+  const coins = g.done * 3 + stars * 5;
+  const firstClear = stars > 0 && P.stars[g.d] === 0;
+  P.stars[g.d] = Math.max(P.stars[g.d], stars);
+  P.coins += coins;
+  saveP();
+
+  app.innerHTML = '';
+  const sc = el('div', 'screen');
+  const c = el('div', 'card stack');
+  c.append(el('div', 'muted center', esc(dayLabel(g.d))));
+  c.append(el('h2', 'center', esc(stars > 0 ? U.outTime : U.late)));
+  c.append(el('div', 'stars', '⭐'.repeat(stars) + '☆'.repeat(3 - stars)));
+  c.append(el('div', 'center', `${esc(fmt(U.helped, { n: g.done, t: g.total }))} · 🪙 ${esc(fmt(U.earned, { c: coins }))}`));
+  c.append(el('div', 'muted', `<b>${esc(U.disaster)}</b>`));
+  c.append(el('div', 'disaster', esc(g.fails.length ? L.req[pickOne(g.fails)].fail : U.noDisaster)));
+  const row = el('div', 'row');
+  row.append(btn('btn', esc(U.retry), () => startGame(g.d)));
+  if (g.d < DAYS - 1 && unlocked(g.d + 1)) row.append(btn('btn primary', esc(U.next), () => showIntro(g.d + 1)));
+  c.append(row);
+  c.append(btn('btn', `🗓️ ${esc(U.menu)}`, showCalendar));
+  sc.append(c);
+  app.append(sc);
+  if (g.d === DAYS - 1 && firstClear) setTimeout(showFinal, 600);
+}
+
+function showFinal() {
+  stopGame();
+  P.finalSeen = true; saveP();
+  const s = totalStars();
+  const rank = U.ranks[s < 25 ? 0 : s < 40 ? 1 : s < 52 ? 2 : 3];
+  app.innerHTML = '';
+  const sc = el('div', 'screen');
+  const c = el('div', 'card stack center');
+  c.append(el('div', '', '<span style="font-size:64px">🏖️</span>'), el('h2', '', esc(U.finalTitle)), el('p', '', esc(fmt(U.finalText, { s }))));
+  c.append(el('div', 'muted', esc(U.rank)), el('h2', '', '👑 ' + esc(rank)));
+  c.append(btn('btn primary', `🗓️ ${esc(U.menu)}`, showCalendar));
+  sc.append(c);
+  app.append(sc);
+}
+
+document.documentElement.lang = lang;
+document.title = U.title;
+showTitle();
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(() => {});
+</script>
+</body>
+</html>
