@@ -1,5 +1,5 @@
 // Offline support: serve the app shell from cache, refresh it in the background.
-const CACHE = 'morning-chaos-v1';
+const CACHE = 'morning-chaos-v2';
 const ASSETS = ['./', 'index.html', 'manifest.webmanifest', 'strings.js', 'icons/apple-touch-icon.png', 'icons/icon-192.png', 'icons/icon-512.png'];
 
 self.addEventListener('install', e => {
