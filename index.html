@@ -161,6 +161,47 @@
   .flash.bad { color: var(--bad); } .flash.good { color: var(--good); }
   .replies { display: flex; flex-direction: column; gap: 8px; }
 
+  /* second wave of mini-games */
+  .pour { display: flex; justify-content: center; margin-bottom: 14px; }
+  .glass { position: relative; width: 96px; height: 150px; border: 4px solid var(--muted); border-top: none; border-radius: 0 0 18px 18px; overflow: hidden; background: var(--card); }
+  .juice { position: absolute; left: 0; right: 0; bottom: 0; height: 0; background: linear-gradient(#ffc04d, #f59a1b); }
+  .line-mark { position: absolute; left: 0; right: 0; height: 0; border-top: 3px dashed var(--bad); }
+  .hold { width: 100%; padding: 18px; touch-action: none; -webkit-touch-callout: none; }
+  .pans { display: flex; gap: 10px; justify-content: center; margin: 4px 0 26px; }
+  .pan { position: relative; width: 31%; max-width: 120px; aspect-ratio: 1; border-radius: 50%; background: #2c2c2e; border: 7px solid #4a4a4e; display: grid; place-items: center; padding: 0; }
+  .pan .cake { width: 72%; height: 72%; border-radius: 50%; display: block; box-shadow: inset 0 -4px 0 rgba(0,0,0,.12); }
+  .pan small { position: absolute; bottom: -24px; left: 0; right: 0; font-size: 13px; color: var(--muted); }
+  .pan:disabled { opacity: .55; }
+  .big-item { font-size: 72px; text-align: center; line-height: 1.2; margin: 4px 0 10px; }
+  .count { text-align: center; color: var(--muted); font-size: 13px; margin-bottom: 8px; }
+  .baskets { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .baskets .tile { flex-direction: column; font-size: 30px; aspect-ratio: auto; padding: 10px 0; display: flex; align-items: center; }
+  .baskets .tile small { font-size: 12px; color: var(--muted); }
+  .tangle svg { width: 100%; height: auto; display: block; background: var(--card); border: 1px solid var(--line); border-radius: 14px; margin-bottom: 10px; }
+  .plugs { display: grid; grid-auto-flow: column; gap: 8px; }
+  .money { text-align: center; font-size: 22px; font-weight: 700; margin: 2px 0 10px; font-variant-numeric: tabular-nums; }
+  .coins { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-bottom: 8px; }
+  .coin { border-radius: 50%; aspect-ratio: 1; border: 2px solid #b8902a; background: radial-gradient(circle at 35% 30%, #ffe9a3, #e0b84a); color: #3a2a05; font-weight: 800; font-size: 13px; padding: 0; }
+  .coin.big { border-color: #8d8d8d; background: radial-gradient(circle at 35% 30%, #fff6d0, #c9a43b 55%, #a8a8a8 56%); }
+  .guesses { display: flex; flex-direction: column; gap: 4px; align-items: center; margin-bottom: 8px; min-height: 30px; }
+  .guess { display: flex; gap: 4px; }
+  .guess span { width: 34px; height: 34px; border-radius: 8px; display: grid; place-items: center; font-weight: 800; color: #fff; }
+  .g-ok { background: #3f9d5b; } .g-near { background: #d9a520; } .g-no { background: #7b7f86; }
+  .slot-row { display: flex; gap: 6px; justify-content: center; margin-bottom: 8px; }
+  .slot-row span { width: 40px; height: 40px; border: 2px solid var(--line); border-radius: 10px; display: grid; place-items: center; font-size: 20px; font-weight: 800; }
+  .digits { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
+  .digits .tile { font-size: 20px; font-weight: 800; aspect-ratio: 1; }
+  .order { text-align: center; font-size: 30px; letter-spacing: 2px; background: var(--here); border-radius: 12px; padding: 6px; margin-bottom: 8px; }
+  .built { text-align: center; font-size: 26px; min-height: 36px; margin-bottom: 8px; }
+  .diffs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .diffs .grid3 { gap: 4px; }
+  .diffs .tile { font-size: 22px; aspect-ratio: 1; }
+  .diffs .left .tile { cursor: default; }
+  .field { position: relative; height: 230px; border-radius: 16px; background: var(--card); border: 1px solid var(--line); overflow: hidden; touch-action: none; margin-bottom: 4px; }
+  .field .toast-fly { position: absolute; font-size: 32px; transform: translate(-50%, -50%); pointer-events: none; }
+  .field .plate { position: absolute; bottom: 4px; font-size: 44px; transform: translateX(-50%); pointer-events: none; }
+  .field .score { position: absolute; top: 6px; right: 10px; font-size: 14px; color: var(--muted); font-weight: 700; }
+
   .sheet-bg { position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 10; display: flex; align-items: flex-end; justify-content: center; }
   .sheet { background: var(--bg); width: 100%; max-width: 520px; max-height: 88vh; overflow: auto; border-radius: 22px 22px 0 0; padding: 20px max(16px, env(safe-area-inset-right)) max(20px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
   .sheet h3 { font-size: 22px; margin-bottom: 12px; }
@@ -177,7 +218,7 @@
 </head>
 <body>
 <div id="app"></div>
-<script src="strings.js?v=4"></script>
+<script src="strings.js?v=5"></script>
 <script>
 // ===================== data =====================
 const ROOMS = [
@@ -224,7 +265,18 @@ const REQ = {
   cake:       { who: 'mauro',  room: 'kitchen', kind: 'pack', icon: '🎂', good: ['🥚', '🧈', '🍫', '🍓'], bad: ['🧦', '🔑', '🐟', '🧽'], special: 'party', only: true },
   suitcase:   { who: 'mauro',  room: 'hall',    kind: 'pack', icon: '🧳', good: ['👙', '🩴', '🕶️', '🧴'], bad: ['🧹', '🪴', '📺', '🍳'], weeks: [3], special: 'departure' },
   passport:   { who: 'mauro',  room: 'living',  kind: 'find', icon: '🛂', covers: LIVING, special: 'departure', only: true },
+  // second wave of mini-games (slow = extra patience for the longer puzzles)
+  juice:      { who: 'anouk',  room: 'kitchen', kind: 'pour', icon: '🧃' },
+  pancakes:   { who: 'mauro',  room: 'kitchen', kind: 'flip', icon: '🥞', slow: 1.4 },
+  laundry:    { who: 'anouk',  room: 'girls',   kind: 'sort', icon: '👚', slow: 1.2 },
+  chargers:   { who: 'margot', room: 'living',  kind: 'tangle', icon: '🔌', slow: 1.3 },
+  change:     { who: 'margot', room: 'hall',    kind: 'change', icon: '💶', slow: 1.3 },
+  phone:      { who: 'mauro',  room: 'living',  kind: 'hotcold', icon: '📱' },
+  bikeLock:   { who: 'margot', room: 'garden',  kind: 'code', icon: '🔐', slow: 1.6 },
+  sandwich:   { who: 'anouk',  room: 'kitchen', kind: 'stack', icon: '🧾', slow: 1.2 },
+  catchToast: { who: 'mauro',  room: 'kitchen', kind: 'catch', icon: '🤹', slow: 1.3 },
   // Grandma's Visit (bonus week 5)
+  spotDiff:   { who: 'grandma', room: 'living',  kind: 'diff', icon: '🔍', weeks: [4], slow: 1.4 },
   glasses:    { who: 'grandma', room: 'living',  kind: 'find', icon: '👓', covers: LIVING, weeks: [4] },
   remote:     { who: 'grandma', room: 'living',  kind: 'seq', icon: '📺', set: ['🔴', '🟢', '🔵', '🟡'], weeks: [4] },
   scarf:      { who: 'grandma', room: 'hall',    kind: 'reply', icon: '🧣', weeks: [4] },
@@ -472,6 +524,7 @@ function spawn(id) {
   p *= 0.85 + Math.random() * 0.3;
   if (g.ev === 'fight' && def.room === 'bath') p *= 0.6;
   if (def.special) p *= 1.4;
+  if (def.slow) p *= def.slow;
   const r = { uid: ++g.uid, id, def, max: p, left: p };
   if (has('robot') && CLEANING.includes(id)) r.robotAt = g.t + 3.5;
   if (id === 'homework') r.vars = mathQuestion();
@@ -853,8 +906,280 @@ const MINI = {
       else { say(U.badReply, 'bad'); r.left = r.left * 0.6; list.querySelectorAll('button').forEach(b => b.disabled = true); setTimeout(() => { if (game && game.mini?.req === r) close(); }, 700); }
     }));
     body.append(list);
+  },
+
+  // ---------- second wave ----------
+  pour({ r, body, sub, say, win }) {
+    sub.textContent = U.pourTitle;
+    const glass = el('div', 'glass'), juice = el('div', 'juice'), mark = el('div', 'line-mark');
+    glass.append(juice, mark);
+    const wrap = el('div', 'pour'); wrap.append(glass);
+    const tol = Math.max(0.035, 0.07 - game.lvl * 0.0015), speed = 0.38 + game.lvl * 0.012;
+    let target = 0, level = 0, holding = false, done = false, last = performance.now();
+    const reset = () => { target = 0.5 + Math.random() * 0.35; level = 0; mark.style.bottom = target * 100 + '%'; };
+    reset();
+    const tick = now => {
+      if (!document.body.contains(glass) || done) return;
+      if (holding) {
+        level += (now - last) / 1000 * speed;
+        if (level >= 1) { holding = false; say(U.pourSpill, 'bad'); hurt(r, 1); setTimeout(reset, 400); }
+      }
+      last = now;
+      juice.style.height = Math.min(1, level) * 100 + '%';
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+    const b = el('button', 'btn primary hold', esc(U.pourBtn));
+    b.addEventListener('pointerdown', e => { e.preventDefault(); if (!done) { holding = true; last = performance.now(); } });
+    const stop = () => {
+      if (!holding) return;
+      holding = false;
+      if (Math.abs(level - target) <= tol) { done = true; win(); }
+      else { say(U.pourMiss, 'bad'); hurt(r, 1); setTimeout(reset, 450); }
+    };
+    ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => b.addEventListener(ev, stop));
+    b.oncontextmenu = e => e.preventDefault();
+    body.append(wrap, b);
+  },
+
+  flip({ r, body, sub, say, win }) {
+    sub.textContent = U.flipTitle;
+    const row = el('div', 'pans'), pans = [];
+    const PALE = [246, 231, 193], GOLD = [227, 166, 59], BURNT = [59, 36, 20];
+    const mixC = (a, b, t) => `rgb(${a.map((v, i) => Math.round(v + (b[i] - v) * Math.max(0, Math.min(1, t)))).join(',')})`;
+    for (let i = 0; i < (game.lvl >= 10 ? 3 : 2); i++) {
+      const cake = el('span', 'cake'), st = el('small', '', '1/2');
+      const b = el('button', 'pan'); b.append(cake, st);
+      const p = { b, cake, st, side: 0, prog: Math.random() * 0.15, speed: (0.2 + Math.random() * 0.1) * (1 + game.lvl * 0.02), done: false };
+      b.onclick = () => {
+        if (p.done) return;
+        if (p.prog < 0.6) { say(U.flipEarly, 'bad'); hurt(r, 0.4); return; }
+        if (p.side === 0) { p.side = 1; p.prog = 0; p.st.textContent = '2/2'; }
+        else { p.done = true; b.disabled = true; st.textContent = '✓'; if (pans.every(x => x.done)) win(); }
+      };
+      pans.push(p);
+      row.append(b);
+    }
+    body.append(row);
+    let last = performance.now();
+    const tick = now => {
+      if (!document.body.contains(row)) return;
+      const dt = (now - last) / 1000; last = now;
+      for (const p of pans) {
+        if (p.done) continue;
+        p.prog += dt * p.speed;
+        if (p.prog > 1) { say(U.flipBurnt, 'bad'); hurt(r, 1); p.side = 0; p.prog = 0; p.st.textContent = '1/2'; }
+        p.cake.style.background = p.prog < 0.6 ? mixC(PALE, GOLD, p.prog / 0.6) : p.prog <= 0.85 ? mixC(GOLD, GOLD, 0) : mixC(GOLD, BURNT, (p.prog - 0.85) / 0.15);
+        // clear cue: green rim = flip now, red rim = about to burn
+        p.b.style.borderColor = p.prog < 0.6 ? '' : p.prog <= 0.85 ? '#3f9d5b' : '#d6453d';
+      }
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  },
+
+  sort({ r, body, sub, say, win }) {
+    sub.textContent = U.sortTitle;
+    const owners = Object.keys(SORT_ITEMS);
+    const queue = Array.from({ length: 6 + Math.floor(game.lvl / 5) }, () => { const o = pickOne(owners); return { o, item: pickOne(SORT_ITEMS[o]) }; });
+    let i = 0;
+    const big = el('div', 'big-item'), count = el('div', 'count');
+    const show = () => { big.textContent = queue[i].item; count.textContent = `${i + 1}/${queue.length}`; };
+    const baskets = el('div', 'baskets');
+    for (const o of owners) {
+      const b = btn('tile', `${FACE[o]}<small>${o[0].toUpperCase() + o.slice(1)}</small>`, e => {
+        if (o === queue[i].o) { if (++i === queue.length) return win(); show(); }
+        else { const t = e.currentTarget; t.classList.remove('shake'); void t.offsetWidth; t.classList.add('shake'); say(U.packWrong, 'bad'); hurt(r, 0.8); }
+      });
+      b.dataset.who = o;
+      baskets.append(b);
+    }
+    show();
+    body.append(count, big, baskets);
+  },
+
+  tangle({ r, body, sub, say, win }) {
+    sub.textContent = U.tangleTitle;
+    const n = game.lvl >= 12 ? 4 : 3, labels = 'ABCD'.slice(0, n).split('');
+    const perm = shuffle([...Array(n).keys()]);   // plug i → phone perm[i]
+    const H = n * 56 + 12, y = k => 34 + k * 56, NS = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(NS, 'svg');
+    svg.setAttribute('viewBox', `0 0 300 ${H}`);
+    const paths = [];
+    for (let i = 0; i < n; i++) {
+      const p = document.createElementNS(NS, 'path');
+      const c1 = 20 + Math.random() * (H - 40), c2 = 20 + Math.random() * (H - 40);
+      p.setAttribute('d', `M48 ${y(i)} C 140 ${c1}, 160 ${c2}, 252 ${y(perm[i])}`);
+      p.setAttribute('fill', 'none'); p.setAttribute('stroke', '#8a8f98'); p.setAttribute('stroke-width', '6'); p.setAttribute('stroke-linecap', 'round');
+      svg.append(p); paths.push(p);
+    }
+    const label = (x, yy, t, cls) => { const e = document.createElementNS(NS, 'text'); e.setAttribute('x', x); e.setAttribute('y', yy + 9); e.setAttribute('font-size', '26'); e.setAttribute('text-anchor', 'middle'); if (cls) e.setAttribute('class', cls); e.textContent = t; svg.append(e); return e; };
+    labels.forEach((t, i) => { label(18, y(i) - 2, '🔌'); const l = label(38, y(i) - 14, t); l.setAttribute('font-size', '14'); l.setAttribute('font-weight', '800'); l.setAttribute('fill', 'currentColor'); });
+    const glow = document.createElementNS(NS, 'circle');
+    glow.setAttribute('cx', 276); glow.setAttribute('r', 22); glow.setAttribute('fill', '#ffd400'); glow.setAttribute('opacity', '.55');
+    svg.append(glow);
+    const phones = [...Array(n).keys()].map(k => label(276, y(k), '📱'));
+    const wrap = el('div', 'tangle'); wrap.append(svg);
+    const plugs = el('div', 'plugs');
+    const order = shuffle([...Array(n).keys()]);
+    let step = 0;
+    const ask = () => {
+      glow.setAttribute('cy', y(order[step]));
+      phones.forEach((ph, k) => ph.setAttribute('opacity', k === order[step] ? '1' : '.35'));
+    };
+    labels.forEach((t, i) => plugs.append(btn('btn', '🔌 ' + t, e => {
+      if (perm[i] === order[step]) {
+        paths[i].setAttribute('stroke', '#3f9d5b');
+        e.currentTarget.disabled = true;
+        if (++step === n) return win();
+        ask();
+      } else { say(U.packWrong, 'bad'); hurt(r, 0.8); }
+    })));
+    ask();
+    body.append(wrap, plugs);
+  },
+
+  change({ r, body, sub, say, win }) {
+    const money = c => new Intl.NumberFormat(lang, { style: 'currency', currency: 'EUR' }).format(c / 100);
+    const steps = 10 + Math.floor(Math.random() * (20 + game.lvl * 2));
+    const target = 100 + steps * 10;           // between €2 and ~€9, in 10-cent steps
+    sub.textContent = fmt(U.changeTitle, { amount: money(target) });
+    let paid = 0;
+    const show = el('div', 'money');
+    show.dataset.target = target;
+    const upd = () => show.textContent = `${money(paid)} / ${money(target)}`;
+    const coins = el('div', 'coins');
+    for (const c of [200, 100, 50, 20, 10]) coins.append(btn('coin' + (c >= 100 ? ' big' : ''), c >= 100 ? `${c / 100}€` : `${c}c`, () => {
+      paid += c;
+      if (paid === target) { upd(); return win(); }
+      if (paid > target) { say(U.changeOver, 'bad'); hurt(r, 1); paid = 0; }
+      upd();
+    }));
+    const reset = btn('btn', '↺ ' + esc(U.changeReset), () => { paid = 0; upd(); });
+    reset.style.width = '100%';
+    upd();
+    body.append(show, coins, reset);
+  },
+
+  hotcold({ r, body, sub, say, win }) {
+    sub.textContent = U.hotcoldTitle;
+    const spots = shuffle(['🛋️', '🧊', '🪴', '🧺', '🛁', '📚', '🧥', '🗑️', '🛏️']);
+    const hidden = Math.random() * 9 | 0;
+    const grid = el('div', 'grid3');
+    spots.forEach((s, i) => grid.append(btn('tile', s, e => {
+      const b = e.currentTarget;
+      if (i === hidden) { b.textContent = '📱'; b.classList.add('hit'); return win(U.found); }
+      const d = Math.abs((i % 3) - (hidden % 3)) + Math.abs((i / 3 | 0) - (hidden / 3 | 0));
+      b.textContent = d === 1 ? '🔊' : d === 2 ? '🔉' : '🔈';
+      b.disabled = true;
+    })));
+    body.append(grid);
+  },
+
+  code({ r, body, sub, say, win }) {
+    sub.textContent = U.codeTitle;
+    const k = game.lvl >= 10 ? 7 : 6;
+    const secret = shuffle([...Array(k).keys()].map(x => x + 1)).slice(0, 3);
+    const guesses = el('div', 'guesses'), slots = el('div', 'slot-row');
+    let cur = [];
+    const drawSlots = () => { slots.innerHTML = ''; for (let i = 0; i < 3; i++) slots.append(el('span', '', cur[i] ?? '')); };
+    const digits = el('div', 'digits');
+    for (let d = 1; d <= k; d++) digits.append(btn('tile', String(d), () => {
+      if (cur.length >= 3 || cur.includes(d)) return;
+      cur.push(d); drawSlots();
+      if (cur.length < 3) return;
+      const row = el('div', 'guess');
+      cur.forEach((v, i) => row.append(el('span', v === secret[i] ? 'g-ok' : secret.includes(v) ? 'g-near' : 'g-no', String(v))));
+      guesses.append(row);
+      while (guesses.children.length > 4) guesses.firstChild.remove();
+      if (cur.every((v, i) => v === secret[i])) return win();
+      setTimeout(() => { cur = []; drawSlots(); }, 250);
+    }));
+    digits.append(btn('tile', '⌫', () => { cur.pop(); drawSlots(); }));
+    drawSlots();
+    body.append(guesses, slots, digits);
+  },
+
+  stack({ r, body, sub, say, win }) {
+    sub.textContent = U.stackTitle;
+    const fillings = shuffle(['🧀', '🥓', '🥬', '🍅', '🥒', '🥚', '🍗']);
+    const middle = fillings.slice(0, 2 + Math.min(2, Math.floor(game.lvl / 8)));
+    const order = ['🍞', ...middle, '🍞'];
+    const decoys = fillings.slice(middle.length, middle.length + 2);
+    const card = el('div', 'order', order.join(' '));
+    const built = el('div', 'built');
+    let i = 0;
+    const palette = el('div', 'grid4');
+    for (const item of shuffle(['🍞', ...middle, ...decoys])) palette.append(btn('tile', item, e => {
+      if (item === order[i]) { built.textContent = order.slice(0, ++i).join(' '); if (i === order.length) win(); }
+      else { const t = e.currentTarget; t.classList.remove('shake'); void t.offsetWidth; t.classList.add('shake'); say(U.packWrong, 'bad'); hurt(r, 0.8); }
+    }));
+    body.append(card, built, palette);
+  },
+
+  diff({ r, body, sub, say, win }) {
+    sub.textContent = U.diffTitle;
+    const pool = shuffle(['🪴', '📚', '🕰️', '🧸', '🖼️', '🕯️', '🏺', '📻', '🧶', '🍵', '🎀', '📷', '🧁', '🌵']);
+    const left = pool.slice(0, 9), spare = pool.slice(9);
+    const changed = shuffle([...Array(9).keys()]).slice(0, 3);
+    const right = left.slice();
+    changed.forEach((idx, j) => right[idx] = spare[j]);
+    let found = 0;
+    const leftGrid = el('div', 'grid3'), rightGrid = el('div', 'grid3');
+    left.forEach(x => leftGrid.append(el('div', 'tile', x)));
+    right.forEach((x, idx) => rightGrid.append(btn('tile', x, e => {
+      const b = e.currentTarget;
+      if (changed.includes(idx)) { b.classList.add('hit'); b.disabled = true; if (++found === 3) win(); }
+      else { b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake'); hurt(r, 0.6); }
+    })));
+    const wrap = el('div', 'diffs');
+    const lw = el('div', 'left'); lw.append(leftGrid);
+    const rw = el('div'); rw.append(rightGrid);
+    wrap.append(lw, rw);
+    body.append(wrap);
+  },
+
+  catch({ r, body, sub, say, win }) {
+    sub.textContent = U.catchTitle;
+    const field = el('div', 'field'), plate = el('div', 'plate', '🍽️'), score = el('div', 'score');
+    field.append(plate, score);
+    body.append(field);
+    const need = 5 + Math.floor(game.lvl / 6), speed = 0.42 + game.lvl * 0.012;
+    let px = 0.5, caught = 0, flying = [], nextAt = 0.4, t = 0, last = performance.now(), done = false;
+    const move = e => { const b = field.getBoundingClientRect(); px = Math.max(0.08, Math.min(0.92, (e.clientX - b.left) / b.width)); };
+    field.addEventListener('pointermove', move);
+    field.addEventListener('pointerdown', e => { move(e); field.setPointerCapture?.(e.pointerId); });
+    const tick = now => {
+      if (!document.body.contains(field) || done) return;
+      const dt = Math.min(0.05, (now - last) / 1000); last = now; t += dt;
+      if (t >= nextAt) {
+        const e = el('div', 'toast-fly', Math.random() < 0.12 ? '🥐' : '🍞');
+        field.append(e);
+        flying.push({ e, x: 0.1 + Math.random() * 0.8, y: -0.05 });
+        nextAt = t + Math.max(0.6, 1.2 - game.lvl * 0.02) * (0.7 + Math.random() * 0.6);
+      }
+      for (const f of flying.slice()) {
+        f.y += dt * speed;
+        f.e.style.left = f.x * 100 + '%'; f.e.style.top = f.y * 100 + '%';
+        if (f.y >= 0.82 && f.y < 0.95 && Math.abs(f.x - px) < 0.14) {
+          f.e.remove(); flying = flying.filter(x => x !== f);
+          if (++caught >= need) { done = true; score.textContent = `${caught}/${need}`; return win(); }
+        } else if (f.y > 1.05) {
+          f.e.remove(); flying = flying.filter(x => x !== f);
+          say(U.catchMiss, 'bad'); hurt(r, 0.8);
+        }
+      }
+      plate.style.left = px * 100 + '%';
+      score.textContent = `🍞 ${caught}/${need}`;
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
   }
 };
+// Laundry: whose clothes are these?
+const SORT_ITEMS = { margot: ['🎽', '🩳', '👟', '🥅'], anouk: ['👗', '👠', '👒', '🧣', '👜'], mauro: ['👔', '🧦', '👞', '🩲'] };
+// A wrong move costs a little patience, but never fails the request outright.
+const hurt = (r, s) => { r.left = Math.max(0.5, r.left - s); };
 
 // ===================== results =====================
 function disastersEl(fails) {

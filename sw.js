@@ -1,7 +1,7 @@
 // Offline support: always try the network first, fall back to the cached copy.
 // Bump CACHE (and the ?v= on strings.js in index.html) whenever files change.
-const CACHE = 'morning-chaos-v4';
-const ASSETS = ['./', 'index.html', 'manifest.webmanifest', 'strings.js?v=4',
+const CACHE = 'morning-chaos-v5';
+const ASSETS = ['./', 'index.html', 'manifest.webmanifest', 'strings.js?v=5',
   'icons/apple-touch-icon.png', 'icons/icon-192.png', 'icons/icon-512.png'];
 
 self.addEventListener('install', e => {

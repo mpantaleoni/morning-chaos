@@ -94,7 +94,25 @@ window.STRINGS = {
       timingPhoto: "Take the photo when the needle is in the green!",
       lockedWeek: "Unlock it in the shop",
       on: "ON",
-      off: "OFF"
+      off: "OFF",
+      pourTitle: "Hold to pour, let go at the line!",
+      pourBtn: "Hold to pour",
+      pourMiss: "Not quite! Try again.",
+      pourSpill: "It's overflowing!",
+      flipTitle: "Flip each pancake when it's golden, then the other side!",
+      flipEarly: "Not yet!",
+      flipBurnt: "Burnt! New pancake.",
+      sortTitle: "Whose is this? Tap the right basket!",
+      tangleTitle: "Which plug goes to the glowing phone?",
+      changeTitle: "Pay exactly {amount}!",
+      changeOver: "Too much! Start again.",
+      changeReset: "Reset",
+      hotcoldTitle: "It's ringing… tap to search. Louder means closer!",
+      codeTitle: "Guess the 3-digit code. 🟩 right place, 🟨 wrong place.",
+      stackTitle: "Build the sandwich in this order:",
+      diffTitle: "Tap the 3 differences in the right picture!",
+      catchTitle: "Move the plate to catch the toast!",
+      catchMiss: "Splat!"
     },
     days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
     weeks: [
@@ -174,7 +192,17 @@ window.STRINGS = {
       remote: { ask: "How does this TV remote work? Show me again!", fail: "Grandma ordered fourteen films by accident. All in Finnish." },
       scarf: { ask: "Isn't it too cold for the girls without a scarf?", fail: "Grandma wrapped the girls in three scarves each. In June.", opts: ["They'll be fine, I promise", "It's 25 degrees!", "Knit them one now, then"] },
       recipe: { ask: "Let me cook! Pass me the right ingredients.", fail: "Grandma made pasta with banana sauce. Everyone said it was delicious." },
-      photo: { ask: "Everyone smile! Let me take a family photo!", fail: "The family photo is forty pictures of Grandma's thumb." }
+      photo: { ask: "Everyone smile! Let me take a family photo!", fail: "The family photo is forty pictures of Grandma's thumb." },
+      juice: { ask: "Juice please! To the line, not one drop more.", fail: "The kitchen floor is now 30% orange juice." },
+      pancakes: { ask: "Pancakes! Don't burn them like last time.", fail: "The smoke alarm has joined the family breakfast." },
+      laundry: { ask: "Mum! My clean clothes are mixed up with everyone's!", fail: "Mauro went to work in Anouk's sequin top." },
+      chargers: { ask: "Which charger is mine?! I'm on 2%!", fail: "Every phone in the house is on 1%. Panic." },
+      change: { ask: "I need exact money for the school trip. NOW!", fail: "Margot paid with a €50 note. The teacher is not amused." },
+      phone: { ask: "Can you call my phone? I can't find it anywhere!", fail: "The phone was in the fridge. It's cold now. So is Mauro." },
+      bikeLock: { ask: "I forgot my bike lock code!", fail: "Margot walked to school pushing a locked bike." },
+      sandwich: { ask: "My sandwich, exactly like this. Please. It matters.", fail: "Anouk's sandwich is just two slices of bread. She's posting about it." },
+      spotDiff: { ask: "Someone moved my things on the shelf! What changed?", fail: "Grandma has rearranged the entire house to 'fix it'." },
+      catchToast: { ask: "The toaster's launching toast again! Catch it!", fail: "There is toast on the ceiling. Nobody knows how." }
     }
   },
 
@@ -270,7 +298,25 @@ window.STRINGS = {
       timingPhoto: "Scatta la foto quando l'ago è sul verde!",
       lockedWeek: "Sbloccala nel negozio",
       on: "ON",
-      off: "OFF"
+      off: "OFF",
+      pourTitle: "Tieni premuto per versare, lascia alla riga!",
+      pourBtn: "Tieni premuto per versare",
+      pourMiss: "Quasi! Riprova.",
+      pourSpill: "Trabocca!",
+      flipTitle: "Gira ogni pancake quando è dorato, poi l'altro lato!",
+      flipEarly: "Non ancora!",
+      flipBurnt: "Bruciato! Pancake nuovo.",
+      sortTitle: "Di chi è? Tocca il cesto giusto!",
+      tangleTitle: "Quale spina va al telefono illuminato?",
+      changeTitle: "Paga esattamente {amount}!",
+      changeOver: "Troppo! Ricomincia.",
+      changeReset: "Azzera",
+      hotcoldTitle: "Sta squillando… tocca per cercare. Più forte = più vicino!",
+      codeTitle: "Indovina il codice a 3 cifre. 🟩 posto giusto, 🟨 posto sbagliato.",
+      stackTitle: "Prepara il panino in quest'ordine:",
+      diffTitle: "Tocca le 3 differenze nella foto a destra!",
+      catchTitle: "Muovi il piatto per prendere i toast!",
+      catchMiss: "Splat!"
     },
     days: ["Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì"],
     weeks: [
@@ -350,7 +396,17 @@ window.STRINGS = {
       remote: { ask: "Come funziona questo telecomando? Fammi vedere di nuovo!", fail: "La nonna ha ordinato quattordici film per sbaglio. Tutti in finlandese." },
       scarf: { ask: "Non fa troppo freddo per le ragazze senza sciarpa?", fail: "La nonna ha avvolto le ragazze in tre sciarpe a testa. A giugno.", opts: ["Staranno benissimo, promesso", "Ci sono 25 gradi!", "Allora fagliene una adesso"] },
       recipe: { ask: "Fammi cucinare! Passami gli ingredienti giusti.", fail: "La nonna ha fatto la pasta al sugo di banana. Tutti hanno detto che era buonissima." },
-      photo: { ask: "Sorridete tutti! Facciamo una foto di famiglia!", fail: "La foto di famiglia sono quaranta scatti del pollice della nonna." }
+      photo: { ask: "Sorridete tutti! Facciamo una foto di famiglia!", fail: "La foto di famiglia sono quaranta scatti del pollice della nonna." },
+      juice: { ask: "Succo per favore! Fino alla riga, non una goccia di più.", fail: "Il pavimento della cucina ora è al 30% succo d'arancia." },
+      pancakes: { ask: "Pancake! Non bruciarli come l'ultima volta.", fail: "Il rilevatore di fumo si è unito alla colazione di famiglia." },
+      laundry: { ask: "Mamma! I miei vestiti puliti sono mischiati con quelli di tutti!", fail: "Mauro è andato al lavoro con il top di paillettes di Anouk." },
+      chargers: { ask: "Qual è il mio caricatore?! Sono al 2%!", fail: "Tutti i telefoni di casa sono all'1%. Panico." },
+      change: { ask: "Mi servono i soldi esatti per la gita. ADESSO!", fail: "Margot ha pagato con una banconota da 50 €. La prof non è divertita." },
+      phone: { ask: "Mi fai uno squillo? Non trovo il telefono da nessuna parte!", fail: "Il telefono era nel frigo. Ora è freddo. Anche Mauro." },
+      bikeLock: { ask: "Ho dimenticato il codice del lucchetto della bici!", fail: "Margot è andata a scuola spingendo una bici con il lucchetto." },
+      sandwich: { ask: "Il mio panino, esattamente così. Per favore. È importante.", fail: "Il panino di Anouk sono solo due fette di pane. Lo sta postando." },
+      spotDiff: { ask: "Qualcuno ha spostato le mie cose sulla mensola! Cosa è cambiato?", fail: "La nonna ha riorganizzato tutta la casa per 'sistemarla'." },
+      catchToast: { ask: "Il tostapane sta di nuovo lanciando i toast! Prendili!", fail: "C'è un toast sul soffitto. Nessuno sa come." }
     }
   },
 
@@ -446,7 +502,25 @@ window.STRINGS = {
       timingPhoto: "Mach das Foto, wenn die Nadel im grünen Bereich ist!",
       lockedWeek: "Im Laden freischalten",
       on: "AN",
-      off: "AUS"
+      off: "AUS",
+      pourTitle: "Gedrückt halten zum Eingießen, am Strich loslassen!",
+      pourBtn: "Gedrückt halten",
+      pourMiss: "Knapp daneben! Nochmal.",
+      pourSpill: "Es läuft über!",
+      flipTitle: "Wende jeden Pfannkuchen, wenn er goldbraun ist, dann die andere Seite!",
+      flipEarly: "Noch nicht!",
+      flipBurnt: "Verbrannt! Neuer Pfannkuchen.",
+      sortTitle: "Wem gehört das? Tippe auf den richtigen Korb!",
+      tangleTitle: "Welcher Stecker gehört zum leuchtenden Handy?",
+      changeTitle: "Zahl genau {amount}!",
+      changeOver: "Zu viel! Nochmal von vorn.",
+      changeReset: "Zurücksetzen",
+      hotcoldTitle: "Es klingelt… tippe zum Suchen. Lauter heißt näher!",
+      codeTitle: "Errate den 3-stelligen Code. 🟩 richtige Stelle, 🟨 falsche Stelle.",
+      stackTitle: "Bau das Sandwich in dieser Reihenfolge:",
+      diffTitle: "Tippe auf die 3 Unterschiede im rechten Bild!",
+      catchTitle: "Beweg den Teller und fang den Toast!",
+      catchMiss: "Platsch!"
     },
     days: ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag"],
     weeks: [
@@ -526,7 +600,17 @@ window.STRINGS = {
       remote: { ask: "Wie funktioniert diese Fernbedienung? Zeig's mir noch mal!", fail: "Oma hat aus Versehen vierzehn Filme bestellt. Alle auf Finnisch." },
       scarf: { ask: "Ist es den Mädchen ohne Schal nicht zu kalt?", fail: "Oma hat die Mädchen in je drei Schals gewickelt. Im Juni.", opts: ["Denen geht's gut, versprochen", "Es hat 25 Grad!", "Dann strick ihnen jetzt einen"] },
       recipe: { ask: "Lass mich kochen! Gib mir die richtigen Zutaten.", fail: "Oma hat Nudeln mit Bananensoße gemacht. Alle haben gesagt, es schmeckt köstlich." },
-      photo: { ask: "Alle lächeln! Ich mach ein Familienfoto!", fail: "Das Familienfoto besteht aus vierzig Bildern von Omas Daumen." }
+      photo: { ask: "Alle lächeln! Ich mach ein Familienfoto!", fail: "Das Familienfoto besteht aus vierzig Bildern von Omas Daumen." },
+      juice: { ask: "Saft bitte! Bis zum Strich, keinen Tropfen mehr.", fail: "Der Küchenboden besteht jetzt zu 30 % aus Orangensaft." },
+      pancakes: { ask: "Pfannkuchen! Aber nicht wieder verbrennen.", fail: "Der Rauchmelder frühstückt jetzt mit der Familie." },
+      laundry: { ask: "Mama! Meine saubere Wäsche ist mit der von allen vermischt!", fail: "Mauro ging in Anouks Paillettentop zur Arbeit." },
+      chargers: { ask: "Welches Ladekabel ist meins?! Ich hab 2 %!", fail: "Jedes Handy im Haus hat 1 %. Panik." },
+      change: { ask: "Ich brauche das Geld für den Ausflug passend. JETZT!", fail: "Margot hat mit einem 50-€-Schein bezahlt. Die Lehrerin ist nicht begeistert." },
+      phone: { ask: "Kannst du mich mal anrufen? Ich finde mein Handy nirgends!", fail: "Das Handy war im Kühlschrank. Jetzt ist es kalt. Mauro auch." },
+      bikeLock: { ask: "Ich hab den Code von meinem Fahrradschloss vergessen!", fail: "Margot hat ihr abgeschlossenes Fahrrad zur Schule geschoben." },
+      sandwich: { ask: "Mein Sandwich, genau so. Bitte. Das ist wichtig.", fail: "Anouks Sandwich besteht nur aus zwei Scheiben Brot. Sie postet es gerade." },
+      spotDiff: { ask: "Jemand hat meine Sachen im Regal verstellt! Was ist anders?", fail: "Oma hat das ganze Haus umgeräumt, um es zu 'reparieren'." },
+      catchToast: { ask: "Der Toaster schießt schon wieder Toast durch die Gegend! Fang sie!", fail: "An der Decke klebt ein Toast. Keiner weiß, wie." }
     }
   },
 
@@ -622,7 +706,25 @@ window.STRINGS = {
       timingPhoto: "Prends la photo quand l'aiguille est dans le vert !",
       lockedWeek: "À débloquer dans la boutique",
       on: "ON",
-      off: "OFF"
+      off: "OFF",
+      pourTitle: "Maintiens pour verser, lâche au trait !",
+      pourBtn: "Maintiens pour verser",
+      pourMiss: "Presque ! Réessaie.",
+      pourSpill: "Ça déborde !",
+      flipTitle: "Retourne chaque pancake quand il est doré, puis l'autre côté !",
+      flipEarly: "Pas encore !",
+      flipBurnt: "Brûlé ! Nouveau pancake.",
+      sortTitle: "C'est à qui ? Touche le bon panier !",
+      tangleTitle: "Quelle prise va au téléphone allumé ?",
+      changeTitle: "Paie exactement {amount} !",
+      changeOver: "Trop ! On recommence.",
+      changeReset: "Recommencer",
+      hotcoldTitle: "Ça sonne… touche pour chercher. Plus fort = plus près !",
+      codeTitle: "Devine le code à 3 chiffres. 🟩 bonne place, 🟨 mauvaise place.",
+      stackTitle: "Prépare le sandwich dans cet ordre :",
+      diffTitle: "Touche les 3 différences dans l'image de droite !",
+      catchTitle: "Déplace l'assiette pour attraper les toasts !",
+      catchMiss: "Splatch !"
     },
     days: ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi"],
     weeks: [
@@ -702,7 +804,17 @@ window.STRINGS = {
       remote: { ask: "Comment marche cette télécommande ? Remontre-moi !", fail: "Mamie a commandé quatorze films par erreur. Tous en finnois." },
       scarf: { ask: "Il ne fait pas trop froid pour les filles sans écharpe ?", fail: "Mamie a emmitouflé les filles dans trois écharpes chacune. En juin.", opts: ["Elles n'auront pas froid, promis", "Il fait 25 degrés !", "Alors tricote-leur-en une tout de suite"] },
       recipe: { ask: "Laisse-moi cuisiner ! Passe-moi les bons ingrédients.", fail: "Mamie a fait des pâtes à la sauce banane. Tout le monde a dit que c'était délicieux." },
-      photo: { ask: "Tout le monde sourit ! Je prends une photo de famille !", fail: "La photo de famille, c'est quarante images du pouce de Mamie." }
+      photo: { ask: "Tout le monde sourit ! Je prends une photo de famille !", fail: "La photo de famille, c'est quarante images du pouce de Mamie." },
+      juice: { ask: "Du jus s'il te plaît ! Jusqu'au trait, pas une goutte de plus.", fail: "Le sol de la cuisine est maintenant composé à 30 % de jus d'orange." },
+      pancakes: { ask: "Des pancakes ! Ne les brûle pas comme la dernière fois.", fail: "Le détecteur de fumée s'est invité au petit-déjeuner." },
+      laundry: { ask: "Maman ! Mes vêtements propres sont mélangés avec ceux de tout le monde !", fail: "Mauro est parti au travail avec le top à paillettes d'Anouk." },
+      chargers: { ask: "C'est lequel, mon chargeur ?! Je suis à 2 % !", fail: "Tous les téléphones de la maison sont à 1 %. Panique." },
+      change: { ask: "Il me faut l'appoint pour la sortie. TOUT DE SUITE !", fail: "Margot a payé avec un billet de 50 €. La prof n'est pas ravie." },
+      phone: { ask: "Tu peux appeler mon téléphone ? Je ne le trouve nulle part !", fail: "Le téléphone était dans le frigo. Il est froid maintenant. Mauro aussi." },
+      bikeLock: { ask: "J'ai oublié le code de mon antivol !", fail: "Margot est allée à l'école en poussant un vélo cadenassé." },
+      sandwich: { ask: "Mon sandwich, exactement comme ça. S'il te plaît. C'est important.", fail: "Le sandwich d'Anouk, c'est juste deux tranches de pain. Elle le poste en ce moment." },
+      spotDiff: { ask: "Quelqu'un a déplacé mes affaires sur l'étagère ! Qu'est-ce qui a changé ?", fail: "Mamie a réorganisé toute la maison pour « arranger ça »." },
+      catchToast: { ask: "Le grille-pain lance encore des toasts ! Attrape-les !", fail: "Il y a un toast au plafond. Personne ne sait comment." }
     }
   }
 };
