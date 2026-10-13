@@ -109,8 +109,11 @@
   .house { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   .room { position: relative; background: var(--tile); border: 1px solid var(--line); border-radius: 16px; padding: 8px; min-height: 132px; display: flex; flex-direction: column; gap: 6px; overflow: hidden; }
   .room.here { background: var(--here); border-color: var(--accent); }
-  .room .rn { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; display: flex; justify-content: space-between; gap: 4px; }
-  .room .me { font-size: 18px; line-height: 1; }
+  .room .rn { font-size: 13.5px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0; display: flex; align-items: center; line-height: 1.15; min-height: 28px; }
+  .room.here .rn, .room.going .rn { padding-right: 26px; }
+  .room .rn > span:first-child { display: flex; align-items: center; gap: 4px; min-width: 0; hyphens: manual; -webkit-hyphens: manual; }
+  .room .rn .ri { font-size: 22px; flex: none; }
+  .room .me { position: absolute; top: 6px; right: 6px; font-size: 24px; line-height: 1; }
   .reqs { display: flex; flex-wrap: wrap; gap: 5px; }
   .reqs { gap: 5px; }
   .req { border: 0; border-radius: 14px; background: var(--card); box-shadow: var(--shadow); padding: 6px 4px 7px; display: flex; flex-direction: column; align-items: center; gap: 4px; width: calc(50% - 3px); max-width: 76px; min-width: 62px; outline: 1px solid var(--line); }
@@ -174,7 +177,7 @@
 </head>
 <body>
 <div id="app"></div>
-<script src="strings.js?v=3"></script>
+<script src="strings.js?v=4"></script>
 <script>
 // ===================== data =====================
 const ROOMS = [
@@ -455,6 +458,14 @@ function startGame(d) {
   raf = requestAnimationFrame(loop);
 }
 
+// A fresh times-table question, with a believable wrong answer next to the right one.
+function mathQuestion() {
+  const a = 3 + (Math.random() * 10 | 0), b = 3 + (Math.random() * 10 | 0), ans = a * b;
+  let wrong;
+  do wrong = ans + pickOne([-b, b, -a, a, -1, 1, 10, -10]); while (wrong <= 0 || wrong === ans);
+  return { a, b, ans, wrong };
+}
+
 function spawn(id) {
   const g = game, def = REQ[id];
   let p = g.endless ? Math.max(7, g.pat - g.t * 0.03) : g.pat;
@@ -463,6 +474,7 @@ function spawn(id) {
   if (def.special) p *= 1.4;
   const r = { uid: ++g.uid, id, def, max: p, left: p };
   if (has('robot') && CLEANING.includes(id)) r.robotAt = g.t + 3.5;
+  if (id === 'homework') r.vars = mathQuestion();
   g.active.push(r);
   g.dirty = true;
 }
@@ -574,8 +586,8 @@ function renderHouse() {
   house.classList.toggle('tiltdown', g.sanity <= 0);
   for (const room of ROOMS) {
     const here = !g.moving && g.room === room.id;
-    const tile = el('div', 'room' + (here ? ' here' : ''));
-    tile.append(el('div', 'rn', `<span>${room.icon} ${esc(L.rooms[room.id])}</span><span class="me">${here ? '🙋‍♀️' : (g.moving && g.moving.to === room.id ? '🏃‍♀️' : '')}</span>`));
+    const tile = el('div', 'room' + (here ? ' here' : '') + (g.moving && g.moving.to === room.id ? ' going' : ''));
+    tile.append(el('div', 'rn', `<span><span class="ri">${room.icon}</span>${esc(L.rooms[room.id])}</span><span class="me">${here ? '🙋‍♀️' : (g.moving && g.moving.to === room.id ? '🏃‍♀️' : '')}</span>`));
     const reqs = el('div', 'reqs');
     for (const r of g.active.filter(x => x.def.room === room.id)) {
       const b = btn('req' + (r.robotAt ? ' robot' : ''), `<span class="em">${r.robotAt ? '🤖' : FACE[r.def.who]}<small>${r.def.icon}</small></span><span class="bar"><i></i></span>`, () => openReq(r));
@@ -626,11 +638,18 @@ function updateBars() {
 
 function useGrandma() {
   const g = game;
-  if (!g.grandma || !g.active.length) return;
-  const r = g.active.slice().sort((a, b) => a.left - b.left)[0];
+  if (!g.grandma) return;
+  // Grandma takes over whatever Julie is doing right now; otherwise the most urgent request.
+  if (g.mini) {
+    const r = g.mini.req;
+    closeMini();
+    if (r) resolveReq(r);
+    else { g.sanity = 100; g.emptied = false; g.dirty = true; } // she was at the coffee machine
+  } else {
+    if (!g.active.length) return;
+    resolveReq(g.active.slice().sort((a, b) => a.left - b.left)[0]);
+  }
   g.grandma = 0;
-  if (g.mini && g.mini.req === r) closeMini();
-  resolveReq(r);
   toast(U.grandmaUsed);
   app.querySelector('.grandma')?.remove();
 }
@@ -662,7 +681,7 @@ function openMini(r) {
   const box = el('div', 'mini');
   g.mini = { req: r };
   const who = r ? r.def.who : 'julie';
-  const ask = r ? L.req[r.id].ask : U.coffee;
+  const ask = r ? fmt(L.req[r.id].ask, r.vars || {}) : U.coffee;
   const head = el('div', 'mh');
   head.append(el('div', 'face', FACE[who]), el('div', 'ask', `${esc(ask)}<small></small>`), btn('x', '✕', closeMini));
   box.append(head);
@@ -829,7 +848,7 @@ const MINI = {
     sub.textContent = U.reply;
     const opts = L.req[r.id].opts;
     const list = el('div', 'replies');
-    for (const i of shuffle([0, 1, 2])) list.append(btn('btn', esc(opts[i]), () => {
+    for (const i of shuffle(opts.map((_, k) => k))) list.append(btn('btn', esc(fmt(opts[i], r.vars || {})), () => {
       if (i === 0) { list.querySelectorAll('button').forEach(b => b.disabled = true); say(U.done, 'good'); setTimeout(() => { if (game && game.mini?.req === r) { resolveReq(r); close(); } }, 450); }
       else { say(U.badReply, 'bad'); r.left = r.left * 0.6; list.querySelectorAll('button').forEach(b => b.disabled = true); setTimeout(() => { if (game && game.mini?.req === r) close(); }, 700); }
     }));
