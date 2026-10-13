@@ -107,15 +107,18 @@
   .bar { height: 8px; border-radius: 99px; background: var(--line); overflow: hidden; }
   .bar i { display: block; height: 100%; width: 100%; background: var(--good); border-radius: 99px; transition: background .3s; }
   .house { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .room { position: relative; background: var(--tile); border: 1px solid var(--line); border-radius: 16px; padding: 8px; min-height: 104px; display: flex; flex-direction: column; gap: 6px; overflow: hidden; }
+  .room { position: relative; background: var(--tile); border: 1px solid var(--line); border-radius: 16px; padding: 8px; min-height: 132px; display: flex; flex-direction: column; gap: 6px; overflow: hidden; }
   .room.here { background: var(--here); border-color: var(--accent); }
   .room .rn { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; display: flex; justify-content: space-between; gap: 4px; }
   .room .me { font-size: 18px; line-height: 1; }
   .reqs { display: flex; flex-wrap: wrap; gap: 5px; }
-  .req { border: 0; border-radius: 12px; background: var(--card); box-shadow: var(--shadow); padding: 4px 6px 5px; display: flex; flex-direction: column; align-items: center; gap: 3px; width: 54px; outline: 1px solid var(--line); }
-  .req .em { font-size: 20px; line-height: 1.1; white-space: nowrap; }
-  .req .em small { font-size: 13px; }
-  .req .bar { width: 100%; height: 5px; }
+  .reqs { gap: 5px; }
+  .req { border: 0; border-radius: 14px; background: var(--card); box-shadow: var(--shadow); padding: 6px 4px 7px; display: flex; flex-direction: column; align-items: center; gap: 4px; width: calc(50% - 3px); max-width: 76px; min-width: 62px; outline: 1px solid var(--line); }
+  .req .em { font-size: 27px; line-height: 1.05; white-space: nowrap; }
+  .req .em small { font-size: 22px; }
+  .req .bar { width: 100%; height: 7px; }
+  .req.robot { outline: 2px dashed var(--good); }
+  .preview { min-height: 20px; font-size: 14px; text-align: center; color: var(--muted); padding-top: 6px; }
   .req.urgent { animation: wobble .4s infinite; }
   .req.coffee { outline-style: dashed; }
   @keyframes wobble { 0%,100% { transform: rotate(0); } 25% { transform: rotate(-4deg); } 75% { transform: rotate(4deg); } }
@@ -171,7 +174,7 @@
 </head>
 <body>
 <div id="app"></div>
-<script src="strings.js"></script>
+<script src="strings.js?v=3"></script>
 <script>
 // ===================== data =====================
 const ROOMS = [
@@ -179,7 +182,7 @@ const ROOMS = [
   { id: 'living', icon: '🛋️', c: 0, r: 1 }, { id: 'kitchen', icon: '🍳', c: 1, r: 1 },
   { id: 'hall', icon: '🚪', c: 0, r: 2 }, { id: 'garden', icon: '🌳', c: 1, r: 2 }
 ];
-const FACE = { margot: '📚', anouk: '🎨', mauro: '🧢', julie: '☕' };
+const FACE = { margot: '📚', anouk: '🎨', mauro: '🧢', julie: '☕', grandma: '👵' };
 const LIVING = ['🛋️', '📰', '🧺', '🎮', '🪴', '📦', '🧸', '🎒', '🕹️'];
 const HALL = ['🧥', '👢', '📦', '🛍️', '🧺', '🎒', '🧣', '👞', '🪴'];
 const REQ = {
@@ -217,20 +220,34 @@ const REQ = {
   picnic:     { who: 'mauro',  room: 'kitchen', kind: 'pack', icon: '🧺', good: ['🧀', '🍓', '🥖', '🍰'], bad: ['🧦', '🍋', '🔑', '📚'], special: 'picnic', only: true },
   cake:       { who: 'mauro',  room: 'kitchen', kind: 'pack', icon: '🎂', good: ['🥚', '🧈', '🍫', '🍓'], bad: ['🧦', '🔑', '🐟', '🧽'], special: 'party', only: true },
   suitcase:   { who: 'mauro',  room: 'hall',    kind: 'pack', icon: '🧳', good: ['👙', '🩴', '🕶️', '🧴'], bad: ['🧹', '🪴', '📺', '🍳'], weeks: [3], special: 'departure' },
-  passport:   { who: 'mauro',  room: 'living',  kind: 'find', icon: '🛂', covers: LIVING, special: 'departure', only: true }
+  passport:   { who: 'mauro',  room: 'living',  kind: 'find', icon: '🛂', covers: LIVING, special: 'departure', only: true },
+  // Grandma's Visit (bonus week 5)
+  glasses:    { who: 'grandma', room: 'living',  kind: 'find', icon: '👓', covers: LIVING, weeks: [4] },
+  remote:     { who: 'grandma', room: 'living',  kind: 'seq', icon: '📺', set: ['🔴', '🟢', '🔵', '🟡'], weeks: [4] },
+  scarf:      { who: 'grandma', room: 'hall',    kind: 'reply', icon: '🧣', weeks: [4] },
+  recipe:     { who: 'grandma', room: 'kitchen', kind: 'pack', icon: '🍝', good: ['🍅', '🧄', '🌿', '🧀'], bad: ['🍫', '🧦', '🍌', '📱'], weeks: [4], special: 'farewell' },
+  photo:      { who: 'grandma', room: 'garden',  kind: 'timing', icon: '📸', timing: 'timingPhoto', weeks: [4], special: 'farewell' }
 };
+const CLEANING = ['toothpaste', 'paint', 'mud'];
 // One twist per morning; Fridays are themed finales.
 const EVENTS = [null, null, 'calm', 'lateBus', 'picnic',
                 'powerCut', 'wfh', null, 'slowWifi', 'picnic',
                 'fight', 'wfh', 'powerCut', 'calm', 'party',
-                'slowWifi', 'powerCut', 'fight', 'wfh', 'departure'];
+                'slowWifi', 'powerCut', 'fight', 'wfh', 'departure',
+                'wfh', 'calm', 'fight', 'powerCut', 'farewell'];
+// tier: basics → gadgets (change how you play) → unlocks (new ways to play, gated by progress)
 const UPGRADES = [
-  { id: 'keyHook', icon: '🪝', cost: 30 }, { id: 'sneakers', icon: '👟', cost: 50 },
-  { id: 'espresso', icon: '☕', cost: 60 }, { id: 'prep', icon: '📋', cost: 60 },
-  { id: 'calendar', icon: '🗓️', cost: 70 }, { id: 'labels', icon: '🏷️', cost: 80 },
-  { id: 'headphones', icon: '🎧', cost: 100 }, { id: 'grandma', icon: '👵', cost: 120 }
+  { id: 'keyHook', icon: '🪝', cost: 30, tier: 'shopBasics' }, { id: 'sneakers', icon: '👟', cost: 50, tier: 'shopBasics' },
+  { id: 'espresso', icon: '☕', cost: 60, tier: 'shopBasics' }, { id: 'prep', icon: '📋', cost: 60, tier: 'shopBasics' },
+  { id: 'calendar', icon: '🗓️', cost: 70, tier: 'shopBasics' }, { id: 'labels', icon: '🏷️', cost: 80, tier: 'shopBasics' },
+  { id: 'headphones', icon: '🎧', cost: 100, tier: 'shopBasics' }, { id: 'grandma', icon: '👵', cost: 120, tier: 'shopBasics' },
+  { id: 'speaker', icon: '🔈', cost: 150, tier: 'shopGadgets' }, { id: 'thermos', icon: '🫖', cost: 160, tier: 'shopGadgets' },
+  { id: 'robot', icon: '🤖', cost: 180, tier: 'shopGadgets' }, { id: 'groupChat', icon: '💬', cost: 200, tier: 'shopGadgets' },
+  { id: 'endless', icon: '♾️', cost: 250, tier: 'shopUnlocks', needs: 'reqWeek1', ok: () => P.stars[4] > 0 },
+  { id: 'nightmare', icon: '🌪️', cost: 350, tier: 'shopUnlocks', needs: 'reqWeek2', ok: () => P.stars[9] > 0 },
+  { id: 'grandmaWeek', icon: '👵', cost: 400, tier: 'shopUnlocks', needs: 'reqAll', ok: () => P.stars[19] > 0 }
 ];
-const DAYS = 20;
+const MAIN_DAYS = 20, DAYS = 25;
 
 // ===================== persistence & i18n =====================
 const SAVE = 'morning-chaos-v1', LANG = 'morning-chaos-lang';
@@ -239,7 +256,8 @@ const store = {
   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
 };
 const fresh = () => ({ stars: Array(DAYS).fill(0), coins: 0, up: [], finalSeen: false });
-let P = Object.assign(fresh(), store.get(SAVE, {}));
+let P = Object.assign(fresh(), { best: 0, nightmare: false }, store.get(SAVE, {}));
+while (P.stars.length < DAYS) P.stars.push(0); // saves from before the bonus week
 const saveP = () => store.set(SAVE, P);
 let lang = store.get(LANG, null) || (navigator.language || 'en').slice(0, 2);
 if (!STRINGS[lang]) lang = 'en';
@@ -254,8 +272,8 @@ const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls)
 const btn = (cls, html, fn) => { const b = el('button', cls, html); b.onclick = fn; return b; };
 const weekOf = d => d / 5 | 0;
 const dayLabel = d => `${L.days[d % 5]} · ${L.weeks[weekOf(d)].name}`;
-const unlocked = d => d === 0 || P.stars[d - 1] > 0;
-const totalStars = () => P.stars.reduce((a, b) => a + b, 0);
+const unlocked = d => d === 0 || ((d < MAIN_DAYS || has('grandmaWeek')) && P.stars[d - 1] > 0);
+const totalStars = (n = MAIN_DAYS) => P.stars.slice(0, n).reduce((a, b) => a + b, 0);
 function toast(msg) {
   document.querySelector('.toast')?.remove();
   const t = el('div', 'toast', esc(msg));
@@ -303,10 +321,22 @@ function showCalendar() {
   const h = el('div', 'head');
   h.append(btn('pill', '←', showTitle), el('div', 'grow', esc(U.menu)), btn('pill', `🛍️ ${esc(U.shop)} · 🪙 ${P.coins}`, showShop));
   app.append(h);
+  // special modes
+  if (has('nightmare')) {
+    const nm = btn('btn', `🌪️ ${esc(U.nightmare)}: <b>${P.nightmare ? esc(U.on) : esc(U.off)}</b><br><small class="muted">${esc(U.nightmareHint)}</small>`, () => { P.nightmare = !P.nightmare; saveP(); showCalendar(); });
+    if (P.nightmare) nm.style.borderColor = 'var(--bad)';
+    nm.style.marginBottom = '10px'; nm.style.width = '100%';
+    app.append(nm);
+  }
+  if (has('endless')) {
+    const en = btn('btn primary', `♾️ ${esc(U.endless)} · ${esc(fmt(U.endlessBest, { n: P.best }))}<br><small>${esc(U.endlessDesc)}</small>`, () => startGame('endless'));
+    en.style.marginBottom = '12px'; en.style.width = '100%';
+    app.append(en);
+  }
   const next = P.stars.findIndex((s, i) => s === 0 && unlocked(i));
-  for (let w = 0; w < 4; w++) {
+  for (let w = 0; w < DAYS / 5; w++) {
     const card = el('div', 'week');
-    card.append(el('h3', '', esc(L.weeks[w].name)), el('p', '', esc(L.weeks[w].intro)));
+    card.append(el('h3', '', esc(L.weeks[w].name)), el('p', '', esc(w >= 4 && !has('grandmaWeek') ? '🔒 ' + U.lockedWeek : L.weeks[w].intro)));
     const row = el('div', 'days');
     for (let i = 0; i < 5; i++) {
       const d = w * 5 + i;
@@ -318,23 +348,32 @@ function showCalendar() {
     card.append(row);
     app.append(card);
   }
-  if (P.stars[DAYS - 1] > 0) app.append(btn('btn', '🏖️ ' + esc(U.finalTitle), showFinal));
-  app.append(el('div', 'center muted', `<small>⭐ ${totalStars()}/60</small>`));
+  if (P.stars[MAIN_DAYS - 1] > 0) app.append(btn('btn', '🏖️ ' + esc(U.finalTitle), showFinal));
+  const bonus = has('grandmaWeek');
+  app.append(el('div', 'center muted', `<small>⭐ ${totalStars(bonus ? DAYS : MAIN_DAYS)}/${bonus ? DAYS * 3 : MAIN_DAYS * 3}</small>`));
 }
 function showShop() {
   sheet((s, close) => {
     const head = el('h3', '', `🛍️ ${esc(U.shop)} · 🪙 ${P.coins}`);
     s.append(head);
+    let tier = null;
     for (const u of UPGRADES) {
+      if (u.tier !== tier) {
+        tier = u.tier;
+        const h = el('div', 'muted', `<b>${esc(U[tier])}</b>`);
+        h.style.cssText = 'margin:14px 0 2px;font-size:13px;text-transform:uppercase;letter-spacing:.06em';
+        s.append(h);
+      }
       const t = L.upgrades[u.id];
+      const ready = !u.ok || u.ok();
       const row = el('div', 'up');
-      row.append(el('div', 'i', u.icon), el('div', 't', `<b>${esc(t.name)}</b><span>${esc(t.desc)}</span>`));
+      row.append(el('div', 'i', u.icon), el('div', 't', `<b>${esc(t.name)}</b><span>${esc(t.desc)}${ready ? '' : `<br>🔒 ${esc(fmt(U.requires, { what: U[u.needs] }))}`}</span>`));
       const b = btn('btn' + (has(u.id) ? '' : ' primary'), has(u.id) ? '✓ ' + esc(U.owned) : `🪙 ${u.cost}`, () => {
-        if (has(u.id) || P.coins < u.cost) return;
+        if (has(u.id) || P.coins < u.cost || !ready) return;
         P.coins -= u.cost; P.up.push(u.id); saveP();
         close(); showShop(); if (!game) showCalendar();
       });
-      b.disabled = has(u.id) || P.coins < u.cost;
+      b.disabled = has(u.id) || P.coins < u.cost || !ready;
       row.append(b);
       s.append(row);
     }
@@ -359,20 +398,20 @@ function showIntro(d) {
 let game = null, raf = 0;
 function stopGame() { cancelAnimationFrame(raf); game = null; document.querySelector('.mini')?.remove(); }
 
+function poolFor(weeks) {
+  return Object.keys(REQ).filter(id => !REQ[id].only && (!REQ[id].weeks || REQ[id].weeks.some(w => weeks.includes(w))));
+}
 function plan(d) {
   const ev = EVENTS[d], w = weekOf(d);
-  const pool = Object.keys(REQ).filter(id => {
-    const r = REQ[id];
-    if (r.only) return false;
-    return !r.weeks || r.weeks.includes(w);
-  });
-  const count = Math.round(6 + d * 0.55);
+  const pool = poolFor([w]);
+  const count = Math.round((6 + d * 0.55) * (P.nightmare ? 1.25 : 1));
   const forced = Object.keys(REQ).filter(id => REQ[id].special && REQ[id].special === ev).slice(0, 3);
   const ids = [];
   const used = {};
   while (ids.length < count - forced.length) {
     let cand = pickOne(pool);
     if (ev === 'wfh' && Math.random() < .45) cand = pickOne(pool.filter(id => REQ[id].who === 'mauro'));
+    if (w === 4 && Math.random() < .35) cand = pickOne(pool.filter(id => REQ[id].who === 'grandma' && !(forced.includes(id))));
     if ((used[cand] || 0) >= 1 && Math.random() < .85) continue;
     used[cand] = (used[cand] || 0) + 1;
     ids.push(cand);
@@ -384,27 +423,48 @@ function plan(d) {
 
 function startGame(d) {
   stopGame();
-  const ev = EVENTS[d];
-  let dur = 100 + d * 1.5;
+  const endless = d === 'endless';
+  const lvl = endless ? 6 : d;          // endless starts like a Wednesday and ramps up
+  const ev = endless ? null : EVENTS[d];
+  let dur = endless ? Infinity : 100 + d * 1.5;
   if (ev === 'lateBus') dur *= 0.85;
-  if (has('calendar')) dur += 10;
-  let pat = 16 - d * 0.3;
+  if (has('calendar') && !endless) dur += 10;
+  let pat = 16 - lvl * 0.3;
   if (ev === 'calm') pat *= 1.25;
   if (ev === 'slowWifi') pat *= 0.8;
   if (has('headphones')) pat *= 1.15;
-  const ids = plan(d);
+  if (P.nightmare && !endless) pat *= 0.75;
+  const ids = endless ? [] : plan(d);
   const span = dur * 0.8;
   game = {
-    d, ev, dur, pat, t: 0, last: performance.now(),
+    d, lvl, ev, dur, pat, endless, nightmare: P.nightmare && !endless, t: 0, last: performance.now(),
     queue: ids.map((id, i) => ({ id, at: 1.5 + i * span / ids.length + Math.random() * (span / ids.length) * 0.6 })),
     total: ids.length, active: [], done: 0, fails: [],
     room: 'kitchen', moving: null, sanity: 100, emptied: false, everEmpty: false,
-    decay: (0.7 + d * 0.04) * (has('espresso') ? 0.75 : 1),
+    // coffee drains twice as fast as in the first version (the meter lasts half as long)
+    decay: 2 * (0.7 + lvl * 0.04) * (has('espresso') ? 0.75 : 1),
     powerUntil: ev === 'powerCut' ? dur * 0.6 : 0,
-    grandma: has('grandma') ? 1 : 0, mini: null, dirty: true, uid: 0
+    grandma: has('grandma') ? 1 : 0, groupChat: has('groupChat') ? 1 : 0, thermos: has('thermos') ? 1 : 0,
+    nextSpawn: 1.5, mini: null, dirty: true, uid: 0
   };
+  if (endless) {
+    game.endlessPool = poolFor(has('grandmaWeek') ? [0, 1, 2, 3, 4] : [0, 1, 2, 3]);
+    game.nextId = pickOne(game.endlessPool);
+  }
   renderGame();
   raf = requestAnimationFrame(loop);
+}
+
+function spawn(id) {
+  const g = game, def = REQ[id];
+  let p = g.endless ? Math.max(7, g.pat - g.t * 0.03) : g.pat;
+  p *= 0.85 + Math.random() * 0.3;
+  if (g.ev === 'fight' && def.room === 'bath') p *= 0.6;
+  if (def.special) p *= 1.4;
+  const r = { uid: ++g.uid, id, def, max: p, left: p };
+  if (has('robot') && CLEANING.includes(id)) r.robotAt = g.t + 3.5;
+  g.active.push(r);
+  g.dirty = true;
 }
 
 function loop(now) {
@@ -414,14 +474,18 @@ function loop(now) {
   g.last = now;
   g.t += dt;
   // spawn
-  while (g.queue.length && g.queue[0].at <= g.t) {
-    const q = g.queue.shift();
-    const def = REQ[q.id];
-    let p = g.pat * (0.85 + Math.random() * 0.3);
-    if (g.ev === 'fight' && def.room === 'bath') p *= 0.6;
-    if (def.special) p *= 1.4;
-    g.active.push({ uid: ++g.uid, id: q.id, def, max: p, left: p });
-    g.dirty = true;
+  while (g.queue.length && g.queue[0].at <= g.t) spawn(g.queue.shift().id);
+  if (g.endless && g.t >= g.nextSpawn) {
+    // ever faster: one request every ~6s at first, down to ~2s
+    spawn(g.nextId);
+    g.total++;
+    g.nextId = pickOne(g.endlessPool);
+    if (g.active.some(r => r.id === g.nextId)) g.nextId = pickOne(g.endlessPool);
+    g.nextSpawn = g.t + Math.max(2, 6 - g.t * 0.025) * (0.8 + Math.random() * 0.4);
+  }
+  // robot vacuum finishes cleaning jobs on its own
+  for (const r of g.active.slice()) {
+    if (r.robotAt && g.t >= r.robotAt && !(g.mini && g.mini.req === r)) { resolveReq(r); toast(U.robotOn); }
   }
   // patience
   const mult = g.sanity <= 0 ? 2 : 1;
@@ -432,6 +496,7 @@ function loop(now) {
   }
   // sanity
   g.sanity = Math.max(0, g.sanity - g.decay * dt);
+  if (g.sanity <= 0 && g.thermos) { g.thermos = 0; g.sanity = 50; toast(U.thermosUsed); }
   if (g.sanity <= 0 && !g.emptied) { g.emptied = true; g.everEmpty = true; toast(U.lowCoffee); g.dirty = true; }
   if (g.powerUntil && g.t >= g.powerUntil) { g.powerUntil = 0; g.dirty = true; }
   // travel
@@ -442,7 +507,7 @@ function loop(now) {
     if (then) then();
   }
   // end?
-  if (g.t >= g.dur || (!g.queue.length && !g.active.length)) return endGame();
+  if (g.endless ? g.fails.length >= 3 : (g.t >= g.dur || (!g.queue.length && !g.active.length))) return endGame();
   if (g.dirty) { renderHouse(); g.dirty = false; }
   updateBars();
   raf = requestAnimationFrame(loop);
@@ -481,11 +546,24 @@ function renderGame() {
   hud.append(el('div', 'clock', '7:30'));
   const m = el('div', 'meter', `<small>☕ ${esc(U.coffee)}</small><div class="bar"><i></i></div>`);
   hud.append(m);
+  if (game.groupChat) hud.append(btn('pill groupchat', '💬', useGroupChat));
   if (game.grandma) hud.append(btn('pill grandma', '👵', useGrandma));
   app.append(hud);
   app.append(el('div', 'house'));
-  app.append(el('div', 'speech', esc(L.days[game.d % 5]) + (game.ev ? ' · ' + esc(L.events[game.ev]) : '')));
+  if (has('speaker')) app.append(el('div', 'preview'));
+  const label = game.endless ? `♾️ ${U.endless} · ${fmt(U.endlessBest, { n: P.best })}`
+    : (game.nightmare ? '🌪️ ' : '') + L.days[game.d % 5] + (game.ev ? ' · ' + L.events[game.ev] : '');
+  app.append(el('div', 'speech', esc(label)));
   renderHouse();
+}
+
+function useGroupChat() {
+  const g = game;
+  if (!g.groupChat) return;
+  g.groupChat = 0;
+  for (const r of g.active) r.left = r.max;
+  toast(U.groupChatUsed);
+  app.querySelector('.groupchat')?.remove();
 }
 
 function renderHouse() {
@@ -500,7 +578,7 @@ function renderHouse() {
     tile.append(el('div', 'rn', `<span>${room.icon} ${esc(L.rooms[room.id])}</span><span class="me">${here ? '🙋‍♀️' : (g.moving && g.moving.to === room.id ? '🏃‍♀️' : '')}</span>`));
     const reqs = el('div', 'reqs');
     for (const r of g.active.filter(x => x.def.room === room.id)) {
-      const b = btn('req', `<span class="em">${FACE[r.def.who]}<small>${r.def.icon}</small></span><span class="bar"><i></i></span>`, () => openReq(r));
+      const b = btn('req' + (r.robotAt ? ' robot' : ''), `<span class="em">${r.robotAt ? '🤖' : FACE[r.def.who]}<small>${r.def.icon}</small></span><span class="bar"><i></i></span>`, () => openReq(r));
       b.dataset.uid = r.uid;
       reqs.append(b);
     }
@@ -519,9 +597,20 @@ function renderHouse() {
 
 function updateBars() {
   const g = game;
-  const mins = g.t / g.dur * 5, mm = Math.floor(mins), ss = Math.floor((mins - mm) * 60);
   const clock = app.querySelector('.clock');
-  if (clock) { clock.textContent = `7:${String(30 + mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}`; clock.classList.toggle('hot', mins > 4); }
+  if (clock && g.endless) {
+    clock.textContent = `✓${g.done} ${'💥'.repeat(g.fails.length)}`;
+  } else if (clock) {
+    const mins = g.t / g.dur * 5, mm = Math.floor(mins), ss = Math.floor((mins - mm) * 60);
+    clock.textContent = `7:${String(30 + mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}`;
+    clock.classList.toggle('hot', mins > 4);
+  }
+  const pv = app.querySelector('.preview');
+  if (pv) {
+    const nextId = g.endless ? g.nextId : g.queue[0]?.id;
+    const txt = nextId ? fmt(U.speakerNext, { face: FACE[REQ[nextId].who] + REQ[nextId].icon, room: L.rooms[REQ[nextId].room] }) : '';
+    if (pv.textContent !== txt) pv.textContent = txt;
+  }
   const sb = app.querySelector('.meter .bar i');
   if (sb) { sb.style.width = g.sanity + '%'; sb.style.background = g.sanity > 50 ? 'var(--good)' : g.sanity > 20 ? 'var(--warn)' : 'var(--bad)'; }
   for (const r of g.active) {
@@ -629,7 +718,7 @@ const MINI = {
   },
   mash({ def, body, sub, say, win }) {
     sub.textContent = U[def.mash];
-    const need = def.taps + Math.floor((game.d || 0) / 4);
+    const need = def.taps + Math.floor(game.lvl / 4);
     let n = 0;
     const pb = el('div', 'bar pb', '<i style="width:0%"></i>');
     const icon = def.icon || '☕';
@@ -659,11 +748,11 @@ const MINI = {
     sub.textContent = U[def.timing];
     const track = el('div', 'track');
     const zone = el('div', 'zone'), needle = el('div', 'needle');
-    const w = Math.max(0.12, 0.22 - game.d * 0.004);
+    const w = Math.max(0.12, 0.22 - game.lvl * 0.004);
     const z0 = 0.15 + Math.random() * (0.7 - w);
     zone.style.left = z0 * 100 + '%'; zone.style.width = w * 100 + '%';
     track.append(zone, needle);
-    const speed = 0.9 + game.d * 0.04;
+    const speed = 0.9 + game.lvl * 0.04;
     const t0 = performance.now();
     let pos = 0, live = true;
     const tick = now => {
@@ -704,7 +793,7 @@ const MINI = {
     body.append(grid);
   },
   seq({ r, def, body, sub, say, win }) {
-    const len = 3 + Math.min(2, Math.floor(game.d / 7));
+    const len = 3 + Math.min(2, Math.floor(game.lvl / 7));
     const seq = Array.from({ length: len }, () => Math.random() * def.set.length | 0);
     const grid = el('div', def.set.length === 4 ? 'grid4' : 'grid3');
     const tiles = def.set.map((s, i) => btn('tile', s, () => press(i)));
@@ -749,26 +838,57 @@ const MINI = {
 };
 
 // ===================== results =====================
+function disastersEl(fails) {
+  const box = el('div', 'stack');
+  box.append(el('div', 'muted', `<b>${esc(U.disasters)}</b>`));
+  if (!fails.length) box.append(el('div', 'disaster', esc(U.noDisaster)));
+  // every disaster, in the order it happened; repeats of the same kind get a count
+  const count = {};
+  fails.forEach(id => count[id] = (count[id] || 0) + 1);
+  for (const id of Object.keys(count)) box.append(el('div', 'disaster', `${FACE[REQ[id].who]}${REQ[id].icon} ${esc(L.req[id].fail)}${count[id] > 1 ? ` <b>×${count[id]}</b>` : ''}`));
+  box.style.gap = '6px';
+  return box;
+}
+
 function endGame() {
   const g = game;
   stopGame();
+  app.innerHTML = '';
+  const sc = el('div', 'screen');
+  const c = el('div', 'card stack');
+
+  if (g.endless) {
+    const coins = g.done * 2;
+    const record = g.done > P.best;
+    P.best = Math.max(P.best, g.done);
+    P.coins += coins;
+    saveP();
+    c.append(el('div', 'muted center', '♾️ ' + esc(U.endless)));
+    c.append(el('h2', 'center', esc(U.endlessOver)));
+    c.append(el('div', 'stars', (record ? '🏆 ' : '') + g.done));
+    c.append(el('div', 'center', `${esc(fmt(U.endlessScore, { n: g.done }))} · ${esc(fmt(U.endlessBest, { n: P.best }))} · 🪙 ${esc(fmt(U.earned, { c: coins }))}`));
+    c.append(disastersEl(g.fails));
+    const row = el('div', 'row');
+    row.append(btn('btn primary', esc(U.retry), () => startGame('endless')), btn('btn', `🗓️ ${esc(U.menu)}`, showCalendar));
+    c.append(row);
+    sc.append(c);
+    app.append(sc);
+    return;
+  }
+
   const ratio = g.done / g.total;
   const stars = ratio >= 1 && !g.everEmpty ? 3 : ratio >= 0.8 ? 2 : ratio >= 0.5 ? 1 : 0;
-  const coins = g.done * 3 + stars * 5;
+  const coins = (g.done * 3 + stars * 5) * (g.nightmare ? 2 : 1);
   const firstClear = stars > 0 && P.stars[g.d] === 0;
   P.stars[g.d] = Math.max(P.stars[g.d], stars);
   P.coins += coins;
   saveP();
 
-  app.innerHTML = '';
-  const sc = el('div', 'screen');
-  const c = el('div', 'card stack');
-  c.append(el('div', 'muted center', esc(dayLabel(g.d))));
+  c.append(el('div', 'muted center', (g.nightmare ? '🌪️ ' : '') + esc(dayLabel(g.d))));
   c.append(el('h2', 'center', esc(stars > 0 ? U.outTime : U.late)));
   c.append(el('div', 'stars', '⭐'.repeat(stars) + '☆'.repeat(3 - stars)));
   c.append(el('div', 'center', `${esc(fmt(U.helped, { n: g.done, t: g.total }))} · 🪙 ${esc(fmt(U.earned, { c: coins }))}`));
-  c.append(el('div', 'muted', `<b>${esc(U.disaster)}</b>`));
-  c.append(el('div', 'disaster', esc(g.fails.length ? L.req[pickOne(g.fails)].fail : U.noDisaster)));
+  c.append(disastersEl(g.fails));
   const row = el('div', 'row');
   row.append(btn('btn', esc(U.retry), () => startGame(g.d)));
   if (g.d < DAYS - 1 && unlocked(g.d + 1)) row.append(btn('btn primary', esc(U.next), () => showIntro(g.d + 1)));
@@ -776,7 +896,7 @@ function endGame() {
   c.append(btn('btn', `🗓️ ${esc(U.menu)}`, showCalendar));
   sc.append(c);
   app.append(sc);
-  if (g.d === DAYS - 1 && firstClear) setTimeout(showFinal, 600);
+  if (g.d === MAIN_DAYS - 1 && firstClear) setTimeout(showFinal, 600);
 }
 
 function showFinal() {

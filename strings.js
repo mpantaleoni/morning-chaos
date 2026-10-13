@@ -70,14 +70,39 @@ window.STRINGS = {
       ranks: ["Morning Survivor", "Chaos Manager", "Super Mum", "Legendary Mum"],
       backToTitle: "Back to title",
       resetProgress: "Reset all progress",
-      resetConfirm: "Erase all stars, coins and upgrades?"
+      resetConfirm: "Erase all stars, coins and upgrades?",
+      shopBasics: "Basics",
+      shopGadgets: "Gadgets",
+      shopUnlocks: "Unlocks",
+      requires: "Requires: {what}",
+      reqWeek1: "finish week 1",
+      reqWeek2: "finish week 2",
+      reqAll: "finish all four weeks",
+      groupChat: "Family chat",
+      groupChatUsed: "Family chat: “Everyone, deep breath!” 🙏 Patience restored.",
+      robotOn: "🤖 The robot vacuum is on it!",
+      speakerNext: "🔈 Next: {face} in the {room}",
+      thermosUsed: "☕ Emergency thermos! Half a coffee, just in time.",
+      endless: "Endless Morning",
+      endlessDesc: "No clock. Requests never stop. Three disasters and it's over.",
+      endlessBest: "Best: {n}",
+      endlessOver: "Three disasters. The house wins.",
+      endlessScore: "{n} requests handled",
+      nightmare: "Nightmare mode",
+      nightmareHint: "Less patience, more requests, double coins.",
+      disasters: "Disasters of the day",
+      timingPhoto: "Take the photo when the needle is in the green!",
+      lockedWeek: "Unlock it in the shop",
+      on: "ON",
+      off: "OFF"
     },
     days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
     weeks: [
       { name: "A Normal Week", intro: "Totally normal. Nothing weird will happen." },
       { name: "Rainy Week", intro: "The satellites predicted rain. All week. Mauro is very proud." },
       { name: "Birthday Week", intro: "A birthday is coming. Everyone is suddenly very secretive." },
-      { name: "Holiday Countdown", intro: "Five more mornings until the summer holidays. You can do this." }
+      { name: "Holiday Countdown", intro: "Five more mornings until the summer holidays. You can do this." },
+      { name: "Grandma's Visit", intro: "Grandma is staying for a week. She has opinions. And snacks." }
     ],
     events: {
       calm: "A miracle: everyone woke up in a good mood. Patience +25%.",
@@ -88,7 +113,8 @@ window.STRINGS = {
       fight: "The girls are fighting over the bathroom. Bathroom requests are urgent!",
       picnic: "It's picnic Friday!",
       party: "Party day! Keep the birthday surprise going.",
-      departure: "Last morning! Pack for the holidays."
+      departure: "Last morning! Pack for the holidays.",
+      farewell: "Grandma leaves today. She wants a family photo and to cook one last time."
     },
     rooms: { kitchen: "Kitchen", girls: "Girls' room", bath: "Bathroom", hall: "Hallway", living: "Living room", garden: "Garden" },
     upgrades: {
@@ -99,7 +125,14 @@ window.STRINGS = {
       prep:       { name: "Prep the night before", desc: "Packing tasks need fewer items." },
       headphones: { name: "Noise-cancelling headphones", desc: "Everyone's patience lasts 15% longer (for you)." },
       calendar:   { name: "Family calendar", desc: "10 extra seconds every morning." },
-      grandma:    { name: "Grandma on speed dial", desc: "Once per morning, Grandma solves the most urgent request." }
+      grandma:    { name: "Grandma on speed dial", desc: "Once per morning, Grandma solves the most urgent request." },
+      robot: { name: "Robot vacuum", desc: "Cleans up mud, paint and toothpaste by itself after a few seconds." },
+      speaker: { name: "Smart speaker", desc: "Announces who will need you next, before they start shouting." },
+      groupChat: { name: "Family group chat", desc: "Once per morning: one message and everyone's patience refills." },
+      thermos: { name: "Emergency thermos", desc: "When your coffee runs out, it refills halfway. Once per morning." },
+      endless: { name: "Endless Morning mode", desc: "A new game mode: survive as long as you can and beat your best score." },
+      nightmare: { name: "Nightmare mode", desc: "A switch in the calendar: every morning gets harder, but pays double coins." },
+      grandmaWeek: { name: "Grandma's Visit", desc: "A bonus fifth week with Grandma in the house, new requests and new disasters." }
     },
     req: {
       shoes:      { ask: "Mum! My handball shoes!", fail: "Margot plays handball in flip-flops. The coach is speechless." },
@@ -136,7 +169,12 @@ window.STRINGS = {
       picnic:     { ask: "Don't forget, picnic Friday! Is the basket ready?", fail: "The picnic basket contains one sock and a lemon. Bon appétit." },
       cake:       { ask: "Secret birthday cake! Ingredients, quick!", fail: "The birthday cake is a toast with a candle in it." },
       suitcase:   { ask: "Can you help me pack the suitcase?", fail: "Mauro packed: three remote controls and one flip-flop." },
-      passport:   { ask: "Where are the passports?!", fail: "The holidays start in the passport office. Queue number 487." }
+      passport:   { ask: "Where are the passports?!", fail: "The holidays start in the passport office. Queue number 487." },
+      glasses: { ask: "Where are my glasses? I can't see a thing!", fail: "Grandma read the newspaper upside down. She says the news is better that way." },
+      remote: { ask: "How does this TV remote work? Show me again!", fail: "Grandma ordered fourteen films by accident. All in Finnish." },
+      scarf: { ask: "Isn't it too cold for the girls without a scarf?", fail: "Grandma wrapped the girls in three scarves each. In June.", opts: ["They'll be fine, I promise", "It's 25 degrees!", "Knit them one now, then"] },
+      recipe: { ask: "Let me cook! Pass me the right ingredients.", fail: "Grandma made pasta with banana sauce. Everyone said it was delicious." },
+      photo: { ask: "Everyone smile! Let me take a family photo!", fail: "The family photo is forty pictures of Grandma's thumb." }
     }
   },
 
@@ -208,14 +246,39 @@ window.STRINGS = {
       ranks: ["Sopravvissuta del Mattino", "Manager del Caos", "Super Mamma", "Mamma Leggendaria"],
       backToTitle: "Torna al titolo",
       resetProgress: "Azzera tutti i progressi",
-      resetConfirm: "Cancellare stelle, monete e potenziamenti?"
+      resetConfirm: "Cancellare stelle, monete e potenziamenti?",
+      shopBasics: "Base",
+      shopGadgets: "Gadget",
+      shopUnlocks: "Sblocchi",
+      requires: "Richiede: {what}",
+      reqWeek1: "finire la settimana 1",
+      reqWeek2: "finire la settimana 2",
+      reqAll: "finire tutte e quattro le settimane",
+      groupChat: "Chat di famiglia",
+      groupChatUsed: "Chat di famiglia: “Tutti, un bel respiro!” 🙏 Pazienza ricaricata.",
+      robotOn: "🤖 Ci pensa il robot aspirapolvere!",
+      speakerNext: "🔈 Prossimo: {face} in {room}",
+      thermosUsed: "☕ Thermos d'emergenza! Mezzo caffè, appena in tempo.",
+      endless: "Mattina infinita",
+      endlessDesc: "Niente orologio. Le richieste non finiscono mai. Tre disastri ed è finita.",
+      endlessBest: "Record: {n}",
+      endlessOver: "Tre disastri. Vince la casa.",
+      endlessScore: "{n} richieste gestite",
+      nightmare: "Modalità incubo",
+      nightmareHint: "Meno pazienza, più richieste, monete doppie.",
+      disasters: "Disastri del giorno",
+      timingPhoto: "Scatta la foto quando l'ago è sul verde!",
+      lockedWeek: "Sbloccala nel negozio",
+      on: "ON",
+      off: "OFF"
     },
     days: ["Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì"],
     weeks: [
       { name: "Una settimana normale", intro: "Assolutamente normale. Non succederà niente di strano." },
       { name: "Settimana di pioggia", intro: "I satelliti hanno previsto pioggia. Tutta la settimana. Mauro è molto orgoglioso." },
       { name: "Settimana del compleanno", intro: "Si avvicina un compleanno. Improvvisamente tutti sono molto misteriosi." },
-      { name: "Conto alla rovescia", intro: "Ancora cinque mattine e iniziano le vacanze estive. Ce la puoi fare." }
+      { name: "Conto alla rovescia", intro: "Ancora cinque mattine e iniziano le vacanze estive. Ce la puoi fare." },
+      { name: "La visita della nonna", intro: "La nonna resta da noi per una settimana. Ha opinioni. E merendine." }
     ],
     events: {
       calm: "Un miracolo: tutti si sono svegliati di buon umore. Pazienza +25%.",
@@ -226,7 +289,8 @@ window.STRINGS = {
       fight: "Le ragazze litigano per il bagno. Le richieste del bagno sono urgenti!",
       picnic: "È venerdì picnic!",
       party: "Giorno della festa! Mantieni la sorpresa.",
-      departure: "Ultima mattina! Si fanno le valigie."
+      departure: "Ultima mattina! Si fanno le valigie.",
+      farewell: "Oggi la nonna riparte. Vuole una foto di famiglia e cucinare un'ultima volta."
     },
     rooms: { kitchen: "Cucina", girls: "Camera ragazze", bath: "Bagno", hall: "Ingresso", living: "Soggiorno", garden: "Giardino" },
     upgrades: {
@@ -237,7 +301,14 @@ window.STRINGS = {
       prep:       { name: "Preparare la sera prima", desc: "Per preparare le borse servono meno oggetti." },
       headphones: { name: "Cuffie antirumore", desc: "La pazienza di tutti dura il 15% in più (per te)." },
       calendar:   { name: "Calendario di famiglia", desc: "10 secondi in più ogni mattina." },
-      grandma:    { name: "Nonna in chiamata rapida", desc: "Una volta per mattina, la nonna risolve la richiesta più urgente." }
+      grandma:    { name: "Nonna in chiamata rapida", desc: "Una volta per mattina, la nonna risolve la richiesta più urgente." },
+      robot: { name: "Robot aspirapolvere", desc: "Pulisce da solo fango, vernice e dentifricio dopo qualche secondo." },
+      speaker: { name: "Altoparlante smart", desc: "Annuncia chi avrà bisogno di te, prima che inizi a urlare." },
+      groupChat: { name: "Chat di famiglia", desc: "Una volta per mattina: un messaggio e la pazienza di tutti si ricarica." },
+      thermos: { name: "Thermos d'emergenza", desc: "Quando finisce il caffè, si ricarica a metà. Una volta per mattina." },
+      endless: { name: "Modalità Mattina infinita", desc: "Una nuova modalità: resisti il più a lungo possibile e batti il tuo record." },
+      nightmare: { name: "Modalità incubo", desc: "Un interruttore nel calendario: ogni mattina è più difficile, ma paga il doppio delle monete." },
+      grandmaWeek: { name: "La visita della nonna", desc: "Una quinta settimana bonus con la nonna in casa, nuove richieste e nuovi disastri." }
     },
     req: {
       shoes:      { ask: "Mamma! Le mie scarpe da pallamano!", fail: "Margot gioca a pallamano in infradito. L'allenatore è senza parole." },
@@ -274,7 +345,12 @@ window.STRINGS = {
       picnic:     { ask: "Non dimenticare: venerdì picnic! Il cestino è pronto?", fail: "Il cestino del picnic contiene un calzino e un limone. Buon appetito." },
       cake:       { ask: "Torta di compleanno segreta! Gli ingredienti, veloce!", fail: "La torta di compleanno è un toast con una candelina." },
       suitcase:   { ask: "Mi aiuti a fare la valigia?", fail: "Mauro ha messo in valigia: tre telecomandi e un'infradito." },
-      passport:   { ask: "Dove sono i passaporti?!", fail: "Le vacanze iniziano all'ufficio passaporti. Numero 487." }
+      passport:   { ask: "Dove sono i passaporti?!", fail: "Le vacanze iniziano all'ufficio passaporti. Numero 487." },
+      glasses: { ask: "Dove sono i miei occhiali? Non vedo niente!", fail: "La nonna ha letto il giornale al contrario. Dice che le notizie sono migliori così." },
+      remote: { ask: "Come funziona questo telecomando? Fammi vedere di nuovo!", fail: "La nonna ha ordinato quattordici film per sbaglio. Tutti in finlandese." },
+      scarf: { ask: "Non fa troppo freddo per le ragazze senza sciarpa?", fail: "La nonna ha avvolto le ragazze in tre sciarpe a testa. A giugno.", opts: ["Staranno benissimo, promesso", "Ci sono 25 gradi!", "Allora fagliene una adesso"] },
+      recipe: { ask: "Fammi cucinare! Passami gli ingredienti giusti.", fail: "La nonna ha fatto la pasta al sugo di banana. Tutti hanno detto che era buonissima." },
+      photo: { ask: "Sorridete tutti! Facciamo una foto di famiglia!", fail: "La foto di famiglia sono quaranta scatti del pollice della nonna." }
     }
   },
 
@@ -346,14 +422,39 @@ window.STRINGS = {
       ranks: ["Morgen-Überlebende", "Chaos-Managerin", "Super-Mama", "Legendäre Mama"],
       backToTitle: "Zurück zum Titel",
       resetProgress: "Gesamten Fortschritt löschen",
-      resetConfirm: "Alle Sterne, Münzen und Upgrades löschen?"
+      resetConfirm: "Alle Sterne, Münzen und Upgrades löschen?",
+      shopBasics: "Grundlagen",
+      shopGadgets: "Gadgets",
+      shopUnlocks: "Freischaltungen",
+      requires: "Benötigt: {what}",
+      reqWeek1: "Woche 1 abschließen",
+      reqWeek2: "Woche 2 abschließen",
+      reqAll: "alle vier Wochen abschließen",
+      groupChat: "Familienchat",
+      groupChatUsed: "Familienchat: „Alle mal tief durchatmen!“ 🙏 Geduld aufgefüllt.",
+      robotOn: "🤖 Der Saugroboter kümmert sich drum!",
+      speakerNext: "🔈 Als Nächstes: {face} – {room}",
+      thermosUsed: "☕ Notfall-Thermoskanne! Ein halber Kaffee, gerade noch rechtzeitig.",
+      endless: "Endloser Morgen",
+      endlessDesc: "Keine Uhr. Die Bitten hören nie auf. Drei Katastrophen und es ist vorbei.",
+      endlessBest: "Rekord: {n}",
+      endlessOver: "Drei Katastrophen. Das Haus gewinnt.",
+      endlessScore: "{n} Bitten erledigt",
+      nightmare: "Albtraum-Modus",
+      nightmareHint: "Weniger Geduld, mehr Bitten, doppelte Münzen.",
+      disasters: "Katastrophen des Tages",
+      timingPhoto: "Mach das Foto, wenn die Nadel im grünen Bereich ist!",
+      lockedWeek: "Im Laden freischalten",
+      on: "AN",
+      off: "AUS"
     },
     days: ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag"],
     weeks: [
       { name: "Eine normale Woche", intro: "Total normal. Es wird nichts Seltsames passieren." },
       { name: "Regenwoche", intro: "Die Satelliten haben Regen vorhergesagt. Die ganze Woche. Mauro ist sehr stolz." },
       { name: "Geburtstagswoche", intro: "Ein Geburtstag steht bevor. Plötzlich sind alle sehr geheimnisvoll." },
-      { name: "Ferien-Countdown", intro: "Noch fünf Morgen bis zu den Sommerferien. Du schaffst das." }
+      { name: "Ferien-Countdown", intro: "Noch fünf Morgen bis zu den Sommerferien. Du schaffst das." },
+      { name: "Omas Besuch", intro: "Oma bleibt eine Woche. Sie hat Meinungen. Und Snacks." }
     ],
     events: {
       calm: "Ein Wunder: Alle sind gut gelaunt aufgewacht. Geduld +25 %.",
@@ -364,7 +465,8 @@ window.STRINGS = {
       fight: "Die Mädchen streiten ums Bad. Bitten im Bad sind dringend!",
       picnic: "Es ist Picknick-Freitag!",
       party: "Partytag! Halte die Geburtstagsüberraschung geheim.",
-      departure: "Letzter Morgen! Koffer packen für die Ferien."
+      departure: "Letzter Morgen! Koffer packen für die Ferien.",
+      farewell: "Heute fährt Oma ab. Sie will ein Familienfoto und noch ein letztes Mal kochen."
     },
     rooms: { kitchen: "Küche", girls: "Mädchenzimmer", bath: "Bad", hall: "Flur", living: "Wohnzimmer", garden: "Garten" },
     upgrades: {
@@ -375,7 +477,14 @@ window.STRINGS = {
       prep:       { name: "Am Vorabend vorbereiten", desc: "Packaufgaben brauchen weniger Sachen." },
       headphones: { name: "Kopfhörer mit Geräuschunterdrückung", desc: "Die Geduld aller hält 15 % länger (für dich)." },
       calendar:   { name: "Familienkalender", desc: "Jeden Morgen 10 Sekunden mehr." },
-      grandma:    { name: "Oma auf Kurzwahl", desc: "Einmal pro Morgen erledigt Oma die dringendste Bitte." }
+      grandma:    { name: "Oma auf Kurzwahl", desc: "Einmal pro Morgen erledigt Oma die dringendste Bitte." },
+      robot: { name: "Saugroboter", desc: "Putzt Matsch, Farbe und Zahnpasta nach ein paar Sekunden von selbst weg." },
+      speaker: { name: "Smarter Lautsprecher", desc: "Kündigt an, wer dich als Nächstes braucht, bevor geschrien wird." },
+      groupChat: { name: "Familien-Gruppenchat", desc: "Einmal pro Morgen: eine Nachricht, und die Geduld aller füllt sich wieder." },
+      thermos: { name: "Notfall-Thermoskanne", desc: "Wenn der Kaffee leer ist, füllt sie ihn zur Hälfte auf. Einmal pro Morgen." },
+      endless: { name: "Modus Endloser Morgen", desc: "Ein neuer Spielmodus: Halte so lange durch wie möglich und knack deinen Rekord." },
+      nightmare: { name: "Albtraum-Modus", desc: "Ein Schalter im Kalender: Jeder Morgen wird schwerer, bringt aber doppelte Münzen." },
+      grandmaWeek: { name: "Omas Besuch", desc: "Eine fünfte Bonuswoche mit Oma im Haus, neuen Bitten und neuen Katastrophen." }
     },
     req: {
       shoes:      { ask: "Mama! Meine Handballschuhe!", fail: "Margot spielt Handball in Flip-Flops. Der Trainer ist sprachlos." },
@@ -412,7 +521,12 @@ window.STRINGS = {
       picnic:     { ask: "Nicht vergessen, Picknick-Freitag! Ist der Korb fertig?", fail: "Im Picknickkorb: eine Socke und eine Zitrone. Guten Appetit." },
       cake:       { ask: "Geheime Geburtstagstorte! Zutaten, schnell!", fail: "Die Geburtstagstorte ist ein Toast mit einer Kerze drauf." },
       suitcase:   { ask: "Hilfst du mir, den Koffer zu packen?", fail: "Mauro hat eingepackt: drei Fernbedienungen und einen Flip-Flop." },
-      passport:   { ask: "Wo sind die Reisepässe?!", fail: "Die Ferien beginnen im Passamt. Wartenummer 487." }
+      passport:   { ask: "Wo sind die Reisepässe?!", fail: "Die Ferien beginnen im Passamt. Wartenummer 487." },
+      glasses: { ask: "Wo ist meine Brille? Ich sehe gar nichts!", fail: "Oma hat die Zeitung verkehrt herum gelesen. Sie sagt, so sind die Nachrichten besser." },
+      remote: { ask: "Wie funktioniert diese Fernbedienung? Zeig's mir noch mal!", fail: "Oma hat aus Versehen vierzehn Filme bestellt. Alle auf Finnisch." },
+      scarf: { ask: "Ist es den Mädchen ohne Schal nicht zu kalt?", fail: "Oma hat die Mädchen in je drei Schals gewickelt. Im Juni.", opts: ["Denen geht's gut, versprochen", "Es hat 25 Grad!", "Dann strick ihnen jetzt einen"] },
+      recipe: { ask: "Lass mich kochen! Gib mir die richtigen Zutaten.", fail: "Oma hat Nudeln mit Bananensoße gemacht. Alle haben gesagt, es schmeckt köstlich." },
+      photo: { ask: "Alle lächeln! Ich mach ein Familienfoto!", fail: "Das Familienfoto besteht aus vierzig Bildern von Omas Daumen." }
     }
   },
 
@@ -484,14 +598,39 @@ window.STRINGS = {
       ranks: ["Survivante du Matin", "Manager du Chaos", "Super Maman", "Maman Légendaire"],
       backToTitle: "Retour au titre",
       resetProgress: "Effacer toute la progression",
-      resetConfirm: "Effacer toutes les étoiles, pièces et améliorations ?"
+      resetConfirm: "Effacer toutes les étoiles, pièces et améliorations ?",
+      shopBasics: "Les bases",
+      shopGadgets: "Gadgets",
+      shopUnlocks: "Déblocages",
+      requires: "Nécessite : {what}",
+      reqWeek1: "finir la semaine 1",
+      reqWeek2: "finir la semaine 2",
+      reqAll: "finir les quatre semaines",
+      groupChat: "Groupe famille",
+      groupChatUsed: "Groupe famille : « Tout le monde respire ! » 🙏 Patience rechargée.",
+      robotOn: "🤖 Le robot aspirateur s'en occupe !",
+      speakerNext: "🔈 Ensuite : {face} – {room}",
+      thermosUsed: "☕ Thermos de secours ! Un demi-café, juste à temps.",
+      endless: "Matin sans fin",
+      endlessDesc: "Pas d'horloge. Les demandes ne s'arrêtent jamais. Trois catastrophes et c'est fini.",
+      endlessBest: "Record : {n}",
+      endlessOver: "Trois catastrophes. La maison gagne.",
+      endlessScore: "{n} demandes gérées",
+      nightmare: "Mode cauchemar",
+      nightmareHint: "Moins de patience, plus de demandes, pièces doublées.",
+      disasters: "Catastrophes du jour",
+      timingPhoto: "Prends la photo quand l'aiguille est dans le vert !",
+      lockedWeek: "À débloquer dans la boutique",
+      on: "ON",
+      off: "OFF"
     },
     days: ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi"],
     weeks: [
       { name: "Une semaine normale", intro: "Totalement normale. Rien de bizarre ne va arriver." },
       { name: "Semaine pluvieuse", intro: "Les satellites ont prévu de la pluie. Toute la semaine. Mauro est très fier." },
       { name: "Semaine d'anniversaire", intro: "Un anniversaire approche. Tout le monde est soudain très mystérieux." },
-      { name: "Compte à rebours", intro: "Plus que cinq matins avant les grandes vacances. Tu peux le faire." }
+      { name: "Compte à rebours", intro: "Plus que cinq matins avant les grandes vacances. Tu peux le faire." },
+      { name: "La visite de Mamie", intro: "Mamie reste une semaine. Elle a des avis sur tout. Et des goûters." }
     ],
     events: {
       calm: "Un miracle : tout le monde s'est réveillé de bonne humeur. Patience +25 %.",
@@ -502,7 +641,8 @@ window.STRINGS = {
       fight: "Les filles se disputent la salle de bain. Les demandes de la salle de bain sont urgentes !",
       picnic: "C'est vendredi pique-nique !",
       party: "Jour de fête ! Garde la surprise d'anniversaire.",
-      departure: "Dernier matin ! On fait les valises."
+      departure: "Dernier matin ! On fait les valises.",
+      farewell: "Mamie repart aujourd'hui. Elle veut une photo de famille et cuisiner une dernière fois."
     },
     rooms: { kitchen: "Cuisine", girls: "Chambre des filles", bath: "Salle de bain", hall: "Entrée", living: "Salon", garden: "Jardin" },
     upgrades: {
@@ -513,7 +653,14 @@ window.STRINGS = {
       prep:       { name: "Tout préparer la veille", desc: "Les sacs à préparer demandent moins d'objets." },
       headphones: { name: "Casque antibruit", desc: "La patience de tout le monde dure 15 % de plus (pour toi)." },
       calendar:   { name: "Calendrier familial", desc: "10 secondes de plus chaque matin." },
-      grandma:    { name: "Mamie en numéro abrégé", desc: "Une fois par matin, Mamie règle la demande la plus urgente." }
+      grandma:    { name: "Mamie en numéro abrégé", desc: "Une fois par matin, Mamie règle la demande la plus urgente." },
+      robot: { name: "Robot aspirateur", desc: "Nettoie tout seul la boue, la peinture et le dentifrice après quelques secondes." },
+      speaker: { name: "Enceinte connectée", desc: "Annonce qui aura besoin de toi ensuite, avant que ça crie." },
+      groupChat: { name: "Groupe de discussion familial", desc: "Une fois par matin : un message, et la patience de tout le monde se recharge." },
+      thermos: { name: "Thermos de secours", desc: "Quand ton café est vide, il le remplit à moitié. Une fois par matin." },
+      endless: { name: "Mode Matin sans fin", desc: "Un nouveau mode : tiens le plus longtemps possible et bats ton record." },
+      nightmare: { name: "Mode cauchemar", desc: "Un interrupteur dans le calendrier : chaque matin est plus dur, mais rapporte deux fois plus de pièces." },
+      grandmaWeek: { name: "La visite de Mamie", desc: "Une cinquième semaine bonus avec Mamie à la maison, de nouvelles demandes et de nouvelles catastrophes." }
     },
     req: {
       shoes:      { ask: "Maman ! Mes chaussures de hand !", fail: "Margot joue au hand en tongs. L'entraîneur est sans voix." },
@@ -550,7 +697,12 @@ window.STRINGS = {
       picnic:     { ask: "N'oublie pas, vendredi pique-nique ! Le panier est prêt ?", fail: "Le panier de pique-nique contient une chaussette et un citron. Bon appétit." },
       cake:       { ask: "Gâteau d'anniversaire secret ! Les ingrédients, vite !", fail: "Le gâteau d'anniversaire est un toast avec une bougie dessus." },
       suitcase:   { ask: "Tu m'aides à faire la valise ?", fail: "Mauro a emporté : trois télécommandes et une tong." },
-      passport:   { ask: "Où sont les passeports ?!", fail: "Les vacances commencent au bureau des passeports. Ticket numéro 487." }
+      passport:   { ask: "Où sont les passeports ?!", fail: "Les vacances commencent au bureau des passeports. Ticket numéro 487." },
+      glasses: { ask: "Où sont mes lunettes ? Je ne vois rien !", fail: "Mamie a lu le journal à l'envers. Elle dit que les nouvelles sont meilleures comme ça." },
+      remote: { ask: "Comment marche cette télécommande ? Remontre-moi !", fail: "Mamie a commandé quatorze films par erreur. Tous en finnois." },
+      scarf: { ask: "Il ne fait pas trop froid pour les filles sans écharpe ?", fail: "Mamie a emmitouflé les filles dans trois écharpes chacune. En juin.", opts: ["Elles n'auront pas froid, promis", "Il fait 25 degrés !", "Alors tricote-leur-en une tout de suite"] },
+      recipe: { ask: "Laisse-moi cuisiner ! Passe-moi les bons ingrédients.", fail: "Mamie a fait des pâtes à la sauce banane. Tout le monde a dit que c'était délicieux." },
+      photo: { ask: "Tout le monde sourit ! Je prends une photo de famille !", fail: "La photo de famille, c'est quarante images du pouce de Mamie." }
     }
   }
 };

@@ -1,9 +1,14 @@
-// Offline support: serve the app shell from cache, refresh it in the background.
-const CACHE = 'morning-chaos-v2';
-const ASSETS = ['./', 'index.html', 'manifest.webmanifest', 'strings.js', 'icons/apple-touch-icon.png', 'icons/icon-192.png', 'icons/icon-512.png'];
+// Offline support: always try the network first, fall back to the cached copy.
+// Bump CACHE (and the ?v= on strings.js in index.html) whenever files change.
+const CACHE = 'morning-chaos-v3';
+const ASSETS = ['./', 'index.html', 'manifest.webmanifest', 'strings.js?v=3',
+  'icons/apple-touch-icon.png', 'icons/icon-192.png', 'icons/icon-512.png'];
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting()));
+  // cache: 'reload' skips the browser's HTTP cache so a new version never stores stale files
+  e.waitUntil(caches.open(CACHE)
+    .then(c => c.addAll(ASSETS.map(u => new Request(u, { cache: 'reload' }))))
+    .then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', e => {
@@ -16,13 +21,13 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
+  // Network first, so a new version shows up on the very next launch; cache when offline.
   e.respondWith(
-    caches.match(e.request).then(cached => {
-      const fresh = fetch(e.request).then(res => {
-        if (res.ok) caches.open(CACHE).then(c => c.put(e.request, res.clone()));
+    fetch(e.request)
+      .then(res => {
+        if (res.ok) { const copy = res.clone(); caches.open(CACHE).then(c => c.put(e.request, copy)); }
         return res;
-      }).catch(() => cached);
-      return cached || fresh;
-    })
+      })
+      .catch(() => caches.match(e.request).then(hit => hit || caches.match('index.html')))
   );
 });
